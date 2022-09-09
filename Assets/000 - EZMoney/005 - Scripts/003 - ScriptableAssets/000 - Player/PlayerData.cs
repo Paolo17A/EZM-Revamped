@@ -12,6 +12,10 @@ public class PlayerData : ScriptableObject
     [field: SerializeField][field: ReadOnly] public string LUID { get; set; }
     [field: SerializeField] public string SubscriptionLevel { get; set; }
 
+    [field: Header("VIRTUAL CURRENCIES")]
+    [field: SerializeField] public int EZCoin { get; set; }
+    [field: SerializeField] public int EZGem { get; set; }
+
     public void ResetPlayerData()
     {
         

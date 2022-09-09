@@ -45,6 +45,8 @@ public class GameManager : MonoBehaviour
     [field: SerializeField] public SceneController SceneController { get; set; }
     [field: SerializeField] public AnimationsLT AnimationsLT { get; set; }
     [field: SerializeField] public InputManager InputManager { get; set; }
+    [field: SerializeField] public AudioManager BGMAudioManager { get; set; }
+    [field: SerializeField] public AudioManager SFXAudioManager { get; set; }
 
     [field: Header("DEBUGGER")]
     [field: SerializeField][field: ReadOnly] public bool CanUseButtons { get; set; }
@@ -101,19 +103,7 @@ public class GameManager : MonoBehaviour
 
     public void CloseErrorPanel()
     {
-        if (SceneController.CurrentScene == "AdventureScene")
-            StartCoroutine(DelayPanelReactivation());
-        else
-        {
-            ErrorPanel.SetActive(false);
-            PanelActivated = false;
-        }
-    }
-
-    private IEnumerator DelayPanelReactivation()
-    {
         ErrorPanel.SetActive(false);
-        yield return new WaitForSeconds(0.01f);
         PanelActivated = false;
     }
     #endregion
