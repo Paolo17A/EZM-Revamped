@@ -12,9 +12,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc082b93bd0fb514d8552eca8f02491d, type: 3}
   m_Name: PlayerData
   m_EditorClassIdentifier: 
-  <PlayfabID>k__BackingField: 
-  <DisplayName>k__BackingField: asdf
+  <PlayfabID>k__BackingField: blaze
+  <DisplayName>k__BackingField: asd
   <LUID>k__BackingField: 
   <SubscriptionLevel>k__BackingField: DIAMOND
-  <EZCoin>k__BackingField: 69420
-  <EZGem>k__BackingField: 69421
+  <EZCoin>k__BackingField: 90
+  <EZGem>k__BackingField: 6
+  <DisplayPicture>k__BackingField: RABBIT
+  <OwnedCharacters>k__BackingField:
+  - {fileID: 11400000, guid: 22f7c50484ea019418f5787ea3f0ba00, type: 2}
+  - {fileID: 11400000, guid: b9ee88d47d9339343b9cb5cb9fc72972, type: 2}
+  - {fileID: 11400000, guid: d6e90ef123daffc459d5c54a189cf691, type: 2}
+  - {fileID: 11400000, guid: 2cb7a32320131884e952126c80bb1ddd, type: 2}
+  - {fileID: 11400000, guid: 7d72976f553418743a473be35ef27fe1, type: 2}
+  - {fileID: 11400000, guid: 1319e3de476963a4c9b44ee942eeead4, type: 2}
+  - {fileID: 11400000, guid: 92bf95f4343913441a78ddee912496b8, type: 2}
+  - {fileID: 11400000, guid: 5402514a4964c724f8698e50805d76a9, type: 2}
+  - {fileID: 11400000, guid: cbfe48f9b74040d459e73e90bca0e500, type: 2}
+  - {fileID: 11400000, guid: 7118d6b7a598ab24895d2eabff639f0f, type: 2}
+  - {fileID: 11400000, guid: 1c1ac2a1bca661648858102a8504d15c, type: 2}
+  - {fileID: 11400000, guid: e7dafb3c32998ef4fa99bd649fc2cf2f, type: 2}
+  - {fileID: 11400000, guid: b64a557f93ac04742ac3d58a2aaa4bb3, type: 2}
+  - {fileID: 11400000, guid: 92fee003dd8f1d34c891e5987f609552, type: 2}
+  - {fileID: 11400000, guid: 1d21b67aaa6a58043959c243977a954a, type: 2}
+  - {fileID: 11400000, guid: 3d385a46d1f7b824a955639d572d489f, type: 2}
+  - {fileID: 11400000, guid: da760de566f651f49ace81c4b581c4c5, type: 2}
+  - {fileID: 11400000, guid: 3c81a448513c856498ae6da99cd10eea, type: 2}
+  - {fileID: 11400000, guid: 7e2aa26ba66cbbf459ad0c0eb570fc18, type: 2}
+  - {fileID: 11400000, guid: 84ebc2601a5fade47841334ea946d22c, type: 2}
+  - {fileID: 11400000, guid: aeeec2ab6bca6dd4b9ce494194914e16, type: 2}
+  - {fileID: 11400000, guid: a670b2a30e158f047adeacf037117c9d, type: 2}
+  - {fileID: 11400000, guid: 52f4063cdf501aa4a92c3d389cd8ee98, type: 2}
+  - {fileID: 11400000, guid: e96097ada31d1e4469aa1cb9c85d629e, type: 2}
+  - {fileID: 11400000, guid: 8e86f9626c0a99843ae36d2e4b46eb45, type: 2}
+  - {fileID: 11400000, guid: dedee7d070f322843ba4905003706b1b, type: 2}
+  - {fileID: 11400000, guid: 6ec5599564e72bb49a20f2a5cb3a5128, type: 2}
+  - {fileID: 11400000, guid: 97f04f4b7aa89cf42b1f2515677b9422, type: 2}
+  - {fileID: 11400000, guid: 085521521af7afc4997a7e45af5fe562, type: 2}
+  - {fileID: 11400000, guid: ece5cb564c537b14183b28af165e6b36, type: 2}
+  LifetimeEZCoin: 0
+  MiningEZCoin: 3456
+  FishingEZCoin: 47654
+  FarmingEZCoin: 4535
+  WoodcuttingEZCoin: 2423
+  <DailyLogin>k__BackingField: 1
+  <SocMedShared>k__BackingField: 1
+  <AdsWatched>k__BackingField: 2
+  <MinsPlayed>k__BackingField: 33
+  <CoinsGained>k__BackingField: 231
+  <DailyClaimed>k__BackingField: 1

@@ -31,7 +31,10 @@ public class LobbyController : MonoBehaviour
         else if (LobbyCore.CurrentLobbyState == LobbyCore.LobbyStates.LEADERBOARD)
             LobbyCore.ShowLeaderboardPanel();
         else if (LobbyCore.CurrentLobbyState == LobbyCore.LobbyStates.QUEST)
+        {
+            QuestCore.InitializeQuestData();
             LobbyCore.ShowQuestPanel();
+        }
         else if (LobbyCore.CurrentLobbyState == LobbyCore.LobbyStates.GIFT)
             LobbyCore.ShowGiftPanel();
         else if (LobbyCore.CurrentLobbyState == LobbyCore.LobbyStates.MAIL)
@@ -39,6 +42,7 @@ public class LobbyController : MonoBehaviour
     }
 
     [SerializeField] private LobbyCore LobbyCore;
+    [SerializeField] private QuestCore QuestCore;
 
     public void LobbyStateToIndex(int state)
     {

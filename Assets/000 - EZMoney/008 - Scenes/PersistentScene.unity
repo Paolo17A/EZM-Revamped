@@ -1540,6 +1540,17 @@ MonoBehaviour:
   <InputManager>k__BackingField: {fileID: 1496165880}
   <BGMAudioManager>k__BackingField: {fileID: 1769781720}
   <SFXAudioManager>k__BackingField: {fileID: 935301842}
+  <AllCharacters>k__BackingField:
+  - {fileID: 11400000, guid: 845c2f5ea77cf0243a871513d99a553f, type: 2}
+  - {fileID: 11400000, guid: 781abe57a3dbc2f45b8e6c60a1c66461, type: 2}
+  - {fileID: 11400000, guid: 780544cf5353c384ba3199bc6b3ac647, type: 2}
+  - {fileID: 11400000, guid: 0ce6ebd2d199068449c0485e6897b334, type: 2}
+  - {fileID: 11400000, guid: 5aa849b581eeada41b05d7cf243c07dc, type: 2}
+  - {fileID: 11400000, guid: 082649cbcc057a84da7a22c89d4886e5, type: 2}
+  - {fileID: 11400000, guid: 0d1a6c081558db447a1f4d133332ce80, type: 2}
+  - {fileID: 11400000, guid: 1cdde1ca3b280614e85ce70a848b250e, type: 2}
+  - {fileID: 11400000, guid: c39e03ea197b1c04cb1fdf4d9e1bd084, type: 2}
+  - {fileID: 11400000, guid: 9771e9afff5ab3140a77358a1355ad45, type: 2}
   <CanUseButtons>k__BackingField: 0
 --- !u!4 &1496165884
 Transform:
@@ -1584,7 +1595,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1498659951}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.54}
+  m_LocalPosition: {x: 0, y: 0, z: -0.69}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 355959985}

@@ -48,6 +48,9 @@ public class GameManager : MonoBehaviour
     [field: SerializeField] public AudioManager BGMAudioManager { get; set; }
     [field: SerializeField] public AudioManager SFXAudioManager { get; set; }
 
+    [field: Header("CHARACTERS")]
+    [field: SerializeField] public List<CharacterData> AllCharacters { get; set; }
+
     [field: Header("DEBUGGER")]
     [field: SerializeField][field: ReadOnly] public bool CanUseButtons { get; set; }
 
@@ -107,4 +110,12 @@ public class GameManager : MonoBehaviour
         PanelActivated = false;
     }
     #endregion
+
+    public CharacterData GetProperCharacter(string characterID)
+    {
+        foreach(CharacterData character in AllCharacters)
+            if (character.animalID == characterID)
+                return character;
+        return null;
+    }
 }

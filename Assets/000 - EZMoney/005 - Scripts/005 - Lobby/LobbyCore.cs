@@ -88,7 +88,7 @@ public class LobbyCore : MonoBehaviour
 
     [Header("VIRTUAL CURRENCIES")]
     [SerializeField] private TextMeshProUGUI EZCoinTMP;
-    [SerializeField] private TextMeshProUGUI EZGemTMP;
+    [field: SerializeField] public TextMeshProUGUI EZGemTMP { get; set; }
 
     [Header("GAME SELECT")]
     [SerializeField] private Button GameSelectBtn;
@@ -116,6 +116,7 @@ public class LobbyCore : MonoBehaviour
         {
             EZCoinTMP.text = PlayerData.EZCoin.ToString("n0");
             EZGemTMP.text = PlayerData.EZGem.ToString("n0");
+            ProfileImage.sprite = GameManager.Instance.GetProperCharacter(PlayerData.DisplayPicture).displaySprite;
             SubscriptionLevelTMP.text = PlayerData.SubscriptionLevel;
             switch(PlayerData.SubscriptionLevel)
             {
@@ -267,6 +268,13 @@ public class LobbyCore : MonoBehaviour
         if (!GameManager.Instance.CanUseButtons)
             return;
         GameManager.Instance.AnimationsLT.FadePanel(MailRT, MailRT, MailCG, 1, 0, () => { CurrentLobbyState = LobbyStates.CORE; });
+    }
+    #endregion
+
+    #region UTILITY
+    public void OpenProfileScene()
+    {
+        GameManager.Instance.SceneController.CurrentScene = "ProfileScene";
     }
     #endregion
 }
