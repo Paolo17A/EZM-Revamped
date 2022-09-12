@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9f4b4d2dee902242a6cc1fb67c12c41, type: 3}
   m_Name: CharacterInstanceData 1
   m_EditorClassIdentifier: 
-  <CharacterInstanceID>k__BackingField: 
-  <BaseCharacterData>k__BackingField: {fileID: 0}
-  <CharacterCurrentRole>k__BackingField: 0
-  <CharacterCurrentState>k__BackingField: 0
+  <CharacterInstanceID>k__BackingField: qwerty
+  <BaseCharacterData>k__BackingField: {fileID: 11400000, guid: 845c2f5ea77cf0243a871513d99a553f, type: 2}
+  <CharacterCurrentRole>k__BackingField: 1
+  <CharacterCurrentState>k__BackingField: 1

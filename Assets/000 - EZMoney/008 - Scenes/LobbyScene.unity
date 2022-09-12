@@ -245,7 +245,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4303921}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 630500007}
+        m_TargetAssemblyTypeName: LobbyCore, Assembly-CSharp
+        m_MethodName: OpenIslandScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!225 &4303926
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -361,7 +373,7 @@ RectTransform:
   - {fileID: 906066744}
   - {fileID: 1243678119}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -814,6 +826,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 129281983}
+  - component: {fileID: 129281984}
   m_Layer: 5
   m_Name: 1stPlaceSlot
   m_TagString: Untagged
@@ -843,6 +856,21 @@ RectTransform:
   m_AnchoredPosition: {x: 516.5, y: -50}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &129281984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 129281982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37bdc4f9ccc6f0a43a6856c886809d7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <RankTMP>k__BackingField: {fileID: 178193383}
+  <NameTMP>k__BackingField: {fileID: 2050603793}
+  <GemTMP>k__BackingField: {fileID: 471423593}
 --- !u!1 &133429960
 GameObject:
   m_ObjectHideFlags: 0
@@ -852,6 +880,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 133429961}
+  - component: {fileID: 133429962}
   m_Layer: 5
   m_Name: 2ndPlaceSlot
   m_TagString: Untagged
@@ -881,6 +910,21 @@ RectTransform:
   m_AnchoredPosition: {x: 516.5, y: -148}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &133429962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 133429960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37bdc4f9ccc6f0a43a6856c886809d7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <RankTMP>k__BackingField: {fileID: 1136129235}
+  <NameTMP>k__BackingField: {fileID: 661097714}
+  <GemTMP>k__BackingField: {fileID: 866204394}
 --- !u!1 &178193381
 GameObject:
   m_ObjectHideFlags: 0
@@ -2402,7 +2446,7 @@ Transform:
   m_Children:
   - {fileID: 390922010}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &390922009
 GameObject:
@@ -2582,7 +2626,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 416951723}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 630500007}
+        m_TargetAssemblyTypeName: LobbyCore, Assembly-CSharp
+        m_MethodName: OpenShopScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &416951723
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3204,6 +3260,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LobbyCore: {fileID: 630500007}
   QuestCore: {fileID: 805028023}
+  LeaderboardCore: {fileID: 1170370096}
 --- !u!114 &630500007
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3275,7 +3332,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &631455062
 GameObject:
@@ -4668,6 +4725,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 808794351}
+  - component: {fileID: 808794352}
   m_Layer: 5
   m_Name: 3rdPlaceSlot
   m_TagString: Untagged
@@ -4697,6 +4755,21 @@ RectTransform:
   m_AnchoredPosition: {x: 516.5, y: -246}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &808794352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808794350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37bdc4f9ccc6f0a43a6856c886809d7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <RankTMP>k__BackingField: {fileID: 504510996}
+  <NameTMP>k__BackingField: {fileID: 628000995}
+  <GemTMP>k__BackingField: {fileID: 1438486117}
 --- !u!1 &828146823
 GameObject:
   m_ObjectHideFlags: 0
@@ -4757,7 +4830,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &832514351
 GameObject:
@@ -5342,7 +5415,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &928441664
 GameObject:
@@ -6552,6 +6625,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1165455903}
   m_CullTransparentMesh: 1
+--- !u!1 &1170370095
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1170370097}
+  - component: {fileID: 1170370096}
+  m_Layer: 0
+  m_Name: LeaderboardManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1170370096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1170370095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f339f1be92e0f3479de1098410cb027, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlayerData: {fileID: 11400000, guid: e30bd1d4d26f63c469821ae7d1847da9, type: 2}
+  Placements:
+  - {fileID: 129281984}
+  - {fileID: 133429962}
+  - {fileID: 808794352}
+  - {fileID: 1288822734}
+  - {fileID: 1722053518}
+--- !u!4 &1170370097
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1170370095}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1243678118
 GameObject:
   m_ObjectHideFlags: 0
@@ -7184,6 +7307,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1288822733}
+  - component: {fileID: 1288822734}
   m_Layer: 5
   m_Name: 4thPlaceSlot
   m_TagString: Untagged
@@ -7213,6 +7337,21 @@ RectTransform:
   m_AnchoredPosition: {x: 516.5, y: -344}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1288822734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1288822732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37bdc4f9ccc6f0a43a6856c886809d7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <RankTMP>k__BackingField: {fileID: 1615995206}
+  <NameTMP>k__BackingField: {fileID: 1265593585}
+  <GemTMP>k__BackingField: {fileID: 1405093208}
 --- !u!1 &1297457089
 GameObject:
   m_ObjectHideFlags: 0
@@ -9047,6 +9186,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1722053517}
+  - component: {fileID: 1722053518}
   m_Layer: 5
   m_Name: 5thPlaceSlot
   m_TagString: Untagged
@@ -9076,6 +9216,21 @@ RectTransform:
   m_AnchoredPosition: {x: 516.5, y: -442}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1722053518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1722053516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37bdc4f9ccc6f0a43a6856c886809d7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <RankTMP>k__BackingField: {fileID: 1526399386}
+  <NameTMP>k__BackingField: {fileID: 1879341530}
+  <GemTMP>k__BackingField: {fileID: 1165455905}
 --- !u!1 &1785415475
 GameObject:
   m_ObjectHideFlags: 0

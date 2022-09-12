@@ -2388,7 +2388,7 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: -17}
-  m_Pivot: {x: 0, y: 1}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &461534037
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3261,7 +3261,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2137741552}
         m_TargetAssemblyTypeName: ProfileCore, Assembly-CSharp
-        m_MethodName: OpenLobbyScene
+        m_MethodName: OpenPreviousScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5381,7 +5381,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_TargetDisplay: 0
 --- !u!224 &1295479918
 RectTransform:
@@ -7734,7 +7734,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1793018454}
   m_Enabled: 1
-  m_Alpha: 0.12
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -8456,6 +8456,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1941921714}
   - component: {fileID: 1941921715}
+  - component: {fileID: 1941921716}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -8477,11 +8478,11 @@ RectTransform:
   m_Father: {fileID: 461534036}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00078451744, y: 0}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 160}
   m_SizeDelta: {x: 0, y: 300}
-  m_Pivot: {x: 0, y: 1}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1941921715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8497,17 +8498,31 @@ MonoBehaviour:
   m_Padding:
     m_Left: 25
     m_Right: 0
-    m_Top: 40
+    m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 1
   m_Spacing: 15
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &1941921716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1941921713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 2
+  m_VerticalFit: 0
 --- !u!1 &1949478320
 GameObject:
   m_ObjectHideFlags: 0
@@ -9031,25 +9046,32 @@ MonoBehaviour:
   TopCG: {fileID: 1068951588}
   SideButtonsRT: {fileID: 170932877}
   SideButtonsCG: {fileID: 170932879}
+  DisplayNameTMP: {fileID: 41025278}
+  PlayfabIDTMP: {fileID: 1497742758}
+  <DisplayImage>k__BackingField: {fileID: 394017664}
+  <EZCoinsTMP>k__BackingField: {fileID: 427052434}
+  <EZGemsTMP>k__BackingField: {fileID: 130668958}
   DisplayRT: {fileID: 1794160962}
   DisplayCG: {fileID: 1794160964}
   ProfileRT: {fileID: 402546632}
   ProfileCG: {fileID: 402546634}
-  CharacterRT: {fileID: 1793018455}
-  CharacterCG: {fileID: 1793018456}
-  AutoRT: {fileID: 233841230}
-  AutoCG: {fileID: 233841234}
-  SwapRT: {fileID: 757976249}
-  SwapCG: {fileID: 757976252}
-  <DisplayImage>k__BackingField: {fileID: 394017664}
-  <EZCoinsTMP>k__BackingField: {fileID: 427052434}
-  <EZGemsTMP>k__BackingField: {fileID: 130668958}
-  DisplayNameTMP: {fileID: 41025278}
-  PlayfabIDTMP: {fileID: 1497742758}
   MiningStatsTMP: {fileID: 1602497870}
   FarmingStatsTMP: {fileID: 1740668605}
   FishingStatsTMP: {fileID: 801873285}
   WoodcuttingStatsTMP: {fileID: 1313380676}
+  CharacterRT: {fileID: 1793018455}
+  CharacterCG: {fileID: 1793018456}
+  CharacterContainer: {fileID: 1941921714}
+  CharacterPrefab: {fileID: 787461031764761132, guid: 2cc6b5ad2246da24fa1101bf1e7b5996, type: 3}
+  AutoRT: {fileID: 233841230}
+  AutoCG: {fileID: 233841234}
+  AutoMiningBtn: {fileID: 1786307549}
+  AutoFarmingBtn: {fileID: 631320313}
+  AutoFishingBtn: {fileID: 488810316}
+  AutoWoodcuttingBtn: {fileID: 357533417}
+  SwapRT: {fileID: 757976249}
+  SwapCG: {fileID: 757976252}
+  ActualOwnedCharacters: []
 --- !u!4 &2137741553
 Transform:
   m_ObjectHideFlags: 0

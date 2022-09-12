@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animalType: 1
   animalID: BEAR
-  characterPanelSprite: {fileID: 0}
+  characterPanelSprite: {fileID: 21300000, guid: be65eb37c1072544e868868fc2638316, type: 3}
   displaySprite: {fileID: 21300000, guid: 64842e0d9bbed684fb719c4ff709f8c3, type: 3}
   undeployedSprite: {fileID: 0}
   deployedSprite: {fileID: 0}

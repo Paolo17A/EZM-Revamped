@@ -42,4 +42,5 @@ public class CharacterInstanceData : ScriptableObject
     [field: SerializeField] public CharacterData BaseCharacterData { get; set; }
     [field: SerializeField] public Roles CharacterCurrentRole { get; set; }
     [field: SerializeField] public States CharacterCurrentState { get; set; }
+    [field: SerializeField] public int CharacterCurrentStamina { get; set; }
 }

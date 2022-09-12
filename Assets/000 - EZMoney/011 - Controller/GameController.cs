@@ -44,6 +44,15 @@ public partial class @GameController : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Drag"",
+                    ""type"": ""Value"",
+                    ""id"": ""ceb49e75-971e-4007-b20f-fa8532de1b3f"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -79,6 +88,28 @@ public partial class @GameController : IInputActionCollection2, IDisposable
                     ""action"": ""Hover"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ad3c4474-899c-4564-9edb-415bf0a1dbf2"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse"",
+                    ""action"": ""Drag"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""21a885a7-f7ff-4bf5-84e4-74a5852cc464"",
+                    ""path"": ""<Touchscreen>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Drag"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -100,6 +131,7 @@ public partial class @GameController : IInputActionCollection2, IDisposable
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_Interact = m_Menu.FindAction("Interact", throwIfNotFound: true);
         m_Menu_Hover = m_Menu.FindAction("Hover", throwIfNotFound: true);
+        m_Menu_Drag = m_Menu.FindAction("Drag", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -161,12 +193,14 @@ public partial class @GameController : IInputActionCollection2, IDisposable
     private IMenuActions m_MenuActionsCallbackInterface;
     private readonly InputAction m_Menu_Interact;
     private readonly InputAction m_Menu_Hover;
+    private readonly InputAction m_Menu_Drag;
     public struct MenuActions
     {
         private @GameController m_Wrapper;
         public MenuActions(@GameController wrapper) { m_Wrapper = wrapper; }
         public InputAction @Interact => m_Wrapper.m_Menu_Interact;
         public InputAction @Hover => m_Wrapper.m_Menu_Hover;
+        public InputAction @Drag => m_Wrapper.m_Menu_Drag;
         public InputActionMap Get() { return m_Wrapper.m_Menu; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -182,6 +216,9 @@ public partial class @GameController : IInputActionCollection2, IDisposable
                 @Hover.started -= m_Wrapper.m_MenuActionsCallbackInterface.OnHover;
                 @Hover.performed -= m_Wrapper.m_MenuActionsCallbackInterface.OnHover;
                 @Hover.canceled -= m_Wrapper.m_MenuActionsCallbackInterface.OnHover;
+                @Drag.started -= m_Wrapper.m_MenuActionsCallbackInterface.OnDrag;
+                @Drag.performed -= m_Wrapper.m_MenuActionsCallbackInterface.OnDrag;
+                @Drag.canceled -= m_Wrapper.m_MenuActionsCallbackInterface.OnDrag;
             }
             m_Wrapper.m_MenuActionsCallbackInterface = instance;
             if (instance != null)
@@ -192,6 +229,9 @@ public partial class @GameController : IInputActionCollection2, IDisposable
                 @Hover.started += instance.OnHover;
                 @Hover.performed += instance.OnHover;
                 @Hover.canceled += instance.OnHover;
+                @Drag.started += instance.OnDrag;
+                @Drag.performed += instance.OnDrag;
+                @Drag.canceled += instance.OnDrag;
             }
         }
     }
@@ -218,5 +258,6 @@ public partial class @GameController : IInputActionCollection2, IDisposable
     {
         void OnInteract(InputAction.CallbackContext context);
         void OnHover(InputAction.CallbackContext context);
+        void OnDrag(InputAction.CallbackContext context);
     }
 }

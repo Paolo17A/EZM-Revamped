@@ -21,11 +21,30 @@ public class PlayerData : ScriptableObject
     [field: SerializeField] public List<CharacterInstanceData> OwnedCharacters { get; set; }
 
     [field: Header("STATISTICS")]
-    [field: SerializeField] public int LifetimeEZCoin;
-    [field: SerializeField] public int MiningEZCoin;
-    [field: SerializeField] public int FishingEZCoin;
-    [field: SerializeField] public int FarmingEZCoin;
-    [field: SerializeField] public int WoodcuttingEZCoin;
+    [field: SerializeField] public int LifetimeEZCoin { get; set; }
+    [field: SerializeField] public int LifetimeEZGem { get; set; }
+    [field: SerializeField] public int MiningEZCoin { get; set; }
+    [field: SerializeField] public int FishingEZCoin { get; set; }
+    [field: SerializeField] public int FarmingEZCoin { get; set; }
+    [field: SerializeField] public int WoodcuttingEZCoin { get; set; }
+
+    [field: Header("AUTOPILOT INVENTORY")]
+    [field: SerializeField] public bool OwnsAutoMining { get; set; }
+    [field: SerializeField] public bool OwnsAutoFarming { get; set; }
+    [field: SerializeField] public bool OwnsAutoFishing { get; set; }
+    [field: SerializeField] public bool OwnsAutoWoodCutting { get; set; }
+
+    [field: Header("ZONES INVENTORY")]
+    [field: SerializeField] public bool CanAccessMineA { get; set; }
+    [field: SerializeField] public bool CanAccessMineB { get; set; }
+    [field: SerializeField] public bool CanAccessFarmA { get; set; }
+    [field: SerializeField] public bool CanAccessFarmB { get; set; }
+    [field: SerializeField] public bool CanAccessPondA { get; set; }
+    [field: SerializeField] public bool CanAccessPondB { get; set; }
+    [field: SerializeField] public bool CanAccessForestA { get; set; }
+    [field: SerializeField] public bool CanAccessForestB { get; set; }
+
+
 
     [field: Header("QUEST")]
     [field: SerializeField] public int DailyLogin { get; set; }

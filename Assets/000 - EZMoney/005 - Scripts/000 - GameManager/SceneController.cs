@@ -200,7 +200,7 @@ public class SceneController : MonoBehaviour
             yield return null;
         }
 
-        //GetActionLoadingList.Clear();
+        GetActionLoadingList.Clear();
 
         loadingSlider.value = 0f;
 

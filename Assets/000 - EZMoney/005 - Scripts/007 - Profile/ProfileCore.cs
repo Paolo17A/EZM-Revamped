@@ -54,6 +54,11 @@ public class ProfileCore : MonoBehaviour
     [SerializeField] private CanvasGroup TopCG;
     [SerializeField] private RectTransform SideButtonsRT;
     [SerializeField] private CanvasGroup SideButtonsCG;
+    [SerializeField] private TextMeshProUGUI DisplayNameTMP;
+    [SerializeField] private TextMeshProUGUI PlayfabIDTMP;
+    [field: SerializeField] public Image DisplayImage { get; set; }
+    [field: SerializeField] public TextMeshProUGUI EZCoinsTMP { get; set; }
+    [field: SerializeField] public TextMeshProUGUI EZGemsTMP { get; set; }
 
     [Header("DISPLAY PANEL")]
     [SerializeField] private RectTransform DisplayRT;
@@ -62,31 +67,33 @@ public class ProfileCore : MonoBehaviour
     [Header("PROFILE PANEL")]
     [SerializeField] private RectTransform ProfileRT;
     [SerializeField] private CanvasGroup ProfileCG;
+    [SerializeField] private TextMeshProUGUI MiningStatsTMP;
+    [SerializeField] private TextMeshProUGUI FarmingStatsTMP;
+    [SerializeField] private TextMeshProUGUI FishingStatsTMP;
+    [SerializeField] private TextMeshProUGUI WoodcuttingStatsTMP;
 
     [Header("CHARACTER PANEL")]
     [SerializeField] private RectTransform CharacterRT;
     [SerializeField] private CanvasGroup CharacterCG;
+    [SerializeField] private Transform CharacterContainer;
+    [SerializeField] private GameObject CharacterPrefab;
 
     [Header("AUTO PANEL")]
     [SerializeField] private RectTransform AutoRT;
     [SerializeField] private CanvasGroup AutoCG;
+    [SerializeField] private Button AutoMiningBtn;
+    [SerializeField] private Button AutoFarmingBtn;
+    [SerializeField] private Button AutoFishingBtn;
+    [SerializeField] private Button AutoWoodcuttingBtn;
 
     [Header("SWAP PANEL")]
     [SerializeField] private RectTransform SwapRT;
     [SerializeField] private CanvasGroup SwapCG;
 
-    [field: Header("TOP UI ELEMENTS")]
-    [field: SerializeField] public Image DisplayImage { get; set; }
-    [field: SerializeField] public TextMeshProUGUI EZCoinsTMP { get; set; }
-    [field: SerializeField] public TextMeshProUGUI EZGemsTMP { get; set; }
-    [SerializeField] private TextMeshProUGUI DisplayNameTMP;
-    [SerializeField] private TextMeshProUGUI PlayfabIDTMP;
-
-    [Header("PROFILE STATS")]
-    [SerializeField] private TextMeshProUGUI  MiningStatsTMP;
-    [SerializeField] private TextMeshProUGUI FarmingStatsTMP;
-    [SerializeField] private TextMeshProUGUI FishingStatsTMP;
-    [SerializeField] private TextMeshProUGUI WoodcuttingStatsTMP;
+    [Header("DEBUGGER")]
+    [ReadOnly] public List<CharacterInstanceData> ActualOwnedCharacters;
+    private GameObject spawnedCharacter;
+    private CharacterImageController spawnedCharacterImage;
 
     //===========================================================
     #endregion
@@ -104,6 +111,43 @@ public class ProfileCore : MonoBehaviour
             FarmingStatsTMP.text = PlayerData.FarmingEZCoin.ToString("n0");
             FishingStatsTMP.text = PlayerData.FishingEZCoin.ToString("n0");
             WoodcuttingStatsTMP.text = PlayerData.WoodcuttingEZCoin.ToString("n0");
+
+            if (!PlayerData.OwnsAutoMining)
+                AutoMiningBtn.interactable = false;
+            if (!PlayerData.OwnsAutoFarming)
+                AutoFarmingBtn.interactable = false;
+            if (!PlayerData.OwnsAutoFishing)
+                AutoFishingBtn.interactable = false;
+            if (!PlayerData.OwnsAutoWoodCutting)
+                AutoWoodcuttingBtn.interactable = false;
+
+            //CHARACTER INITIALIZATION
+            ActualOwnedCharacters.Clear();
+            foreach (Transform child in CharacterContainer)
+                Destroy(child.gameObject);
+
+            foreach (CharacterInstanceData ownedCharacter in PlayerData.OwnedCharacters)
+            {
+                if (ownedCharacter.BaseCharacterData != null)
+                     ActualOwnedCharacters.Add(ownedCharacter);
+                else
+                    break;
+            }
+
+            foreach(CharacterInstanceData ownedCharacter in ActualOwnedCharacters)
+            {
+                spawnedCharacter = Instantiate(CharacterPrefab);
+                spawnedCharacter.transform.SetParent(CharacterContainer);
+                spawnedCharacter.transform.localScale = new Vector3(1, 1, 1);
+                spawnedCharacter.transform.localPosition = new Vector3(0, 0, 0);
+
+                spawnedCharacterImage = spawnedCharacter.GetComponent<CharacterImageController>();
+                spawnedCharacterImage.CharacterID = ownedCharacter.CharacterInstanceID;
+                spawnedCharacterImage.CharacterData = ownedCharacter.BaseCharacterData;
+                spawnedCharacterImage.SetCharacterImageData();
+                spawnedCharacterImage.StaminaTMP.text = ownedCharacter.CharacterCurrentStamina.ToString() + "/" + ownedCharacter.BaseCharacterData.stamina.ToString();
+            }
+
         }
         yield return null;
     }
@@ -174,6 +218,17 @@ public class ProfileCore : MonoBehaviour
     public void OpenLobbyScene()
     {
         GameManager.Instance.SceneController.CurrentScene = "LobbyScene";
+    }
+
+    public void OpenPreviousScene()
+    {
+        GameManager.Instance.SceneController.CurrentScene = GameManager.Instance.SceneController.LastScene;
+    }
+
+    public void LogOutButton()
+    {
+        PlayerPrefs.DeleteAll();
+        GameManager.Instance.SceneController.CurrentScene = "EntryScene";
     }
     #endregion
 }

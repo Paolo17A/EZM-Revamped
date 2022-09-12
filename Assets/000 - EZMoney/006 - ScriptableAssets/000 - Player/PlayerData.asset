@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: PlayerData
   m_EditorClassIdentifier: 
   <PlayfabID>k__BackingField: blaze
-  <DisplayName>k__BackingField: asd
+  <DisplayName>k__BackingField: asdf
   <LUID>k__BackingField: 
   <SubscriptionLevel>k__BackingField: DIAMOND
-  <EZCoin>k__BackingField: 90
+  <EZCoin>k__BackingField: 18000
   <EZGem>k__BackingField: 6
   <DisplayPicture>k__BackingField: RABBIT
   <OwnedCharacters>k__BackingField:
@@ -50,14 +50,27 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 97f04f4b7aa89cf42b1f2515677b9422, type: 2}
   - {fileID: 11400000, guid: 085521521af7afc4997a7e45af5fe562, type: 2}
   - {fileID: 11400000, guid: ece5cb564c537b14183b28af165e6b36, type: 2}
-  LifetimeEZCoin: 0
-  MiningEZCoin: 3456
-  FishingEZCoin: 47654
-  FarmingEZCoin: 4535
-  WoodcuttingEZCoin: 2423
-  <DailyLogin>k__BackingField: 1
-  <SocMedShared>k__BackingField: 1
+  <LifetimeEZCoin>k__BackingField: 0
+  <LifetimeEZGem>k__BackingField: 0
+  <MiningEZCoin>k__BackingField: 0
+  <FishingEZCoin>k__BackingField: 0
+  <FarmingEZCoin>k__BackingField: 0
+  <WoodcuttingEZCoin>k__BackingField: 0
+  <OwnsAutoMining>k__BackingField: 0
+  <OwnsAutoFarming>k__BackingField: 1
+  <OwnsAutoFishing>k__BackingField: 0
+  <OwnsAutoWoodCutting>k__BackingField: 1
+  <CanAccessMineA>k__BackingField: 1
+  <CanAccessMineB>k__BackingField: 0
+  <CanAccessFarmA>k__BackingField: 0
+  <CanAccessFarmB>k__BackingField: 0
+  <CanAccessPondA>k__BackingField: 0
+  <CanAccessPondB>k__BackingField: 0
+  <CanAccessForestA>k__BackingField: 0
+  <CanAccessForestB>k__BackingField: 0
+  <DailyLogin>k__BackingField: 0
+  <SocMedShared>k__BackingField: 0
   <AdsWatched>k__BackingField: 2
   <MinsPlayed>k__BackingField: 33
   <CoinsGained>k__BackingField: 231
-  <DailyClaimed>k__BackingField: 1
+  <DailyClaimed>k__BackingField: 0

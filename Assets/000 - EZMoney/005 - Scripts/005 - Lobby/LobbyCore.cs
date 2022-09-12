@@ -49,6 +49,7 @@ public class LobbyCore : MonoBehaviour
     #region VARIABLES
     //=========================================================================
     [SerializeField] private PlayerData PlayerData;
+    [SerializeField] private IslandCore IslandCore;
 
     [Header("LOADING")]
     [SerializeField] private GameObject LoadingPanel;
@@ -114,7 +115,7 @@ public class LobbyCore : MonoBehaviour
     {
         if(GameManager.Instance.DebugMode)
         {
-            EZCoinTMP.text = PlayerData.EZCoin.ToString("n0");
+            UpdateEZCoinDisplay();
             EZGemTMP.text = PlayerData.EZGem.ToString("n0");
             ProfileImage.sprite = GameManager.Instance.GetProperCharacter(PlayerData.DisplayPicture).displaySprite;
             SubscriptionLevelTMP.text = PlayerData.SubscriptionLevel;
@@ -140,8 +141,18 @@ public class LobbyCore : MonoBehaviour
                     break;
             }
 
-            GameIndex = 0;
-            PreviousGameBtn.interactable = false;
+            if(GameManager.Instance.SceneController.CurrentScene == "LobbyScene")
+            {
+                GameIndex = 0;
+                PreviousGameBtn.interactable = false;
+            }
+
+            else if (GameManager.Instance.SceneController.CurrentScene == "IslandScene")
+            {
+                // TODO: look for individual zone tickets when not in debug mode
+                IslandCore.UnlockIslandZones("MineA");
+            }
+            
         }
         else
         {
@@ -181,18 +192,22 @@ public class LobbyCore : MonoBehaviour
     {
         GameManager.Instance.AnimationsLT.FadePanel(CurrencyRT, null, CurrencyCG, 0, 1, () => { });
         GameManager.Instance.AnimationsLT.FadePanel(MenuRT, null, MenuCG, 0, 1, () => { });
-        GameManager.Instance.AnimationsLT.FadePanel(GameRT, null, GameCG, 0, 1, () => { });
         GameManager.Instance.AnimationsLT.FadePanel(ProfileRT, null, ProfileCG, 0, 1, () => { });
         GameManager.Instance.AnimationsLT.FadePanel(ShopRT, null, ShopCG, 0, 1, () => { });
+        if(GameManager.Instance.SceneController.CurrentScene == "LobbyScene")
+            GameManager.Instance.AnimationsLT.FadePanel(GameRT, null, GameCG, 0, 1, () => { });
+
     }
 
     public void HideCorePanels()
     {
         GameManager.Instance.AnimationsLT.FadePanel(CurrencyRT, null, CurrencyCG, 1, 0, () => { });
         GameManager.Instance.AnimationsLT.FadePanel(MenuRT, null, MenuCG, 1, 0, () => { });
-        GameManager.Instance.AnimationsLT.FadePanel(GameRT, null, GameCG, 1, 0, () => { });
         GameManager.Instance.AnimationsLT.FadePanel(ProfileRT, null, ProfileCG, 1, 0, () => { });
         GameManager.Instance.AnimationsLT.FadePanel(ShopRT, null, ShopCG, 1, 0, () => { });
+        if (GameManager.Instance.SceneController.CurrentScene == "LobbyScene")
+            GameManager.Instance.AnimationsLT.FadePanel(GameRT, null, GameCG, 1, 0, () => { });
+
     }
 
     public void ShowSettingsPanel()
@@ -275,6 +290,26 @@ public class LobbyCore : MonoBehaviour
     public void OpenProfileScene()
     {
         GameManager.Instance.SceneController.CurrentScene = "ProfileScene";
+    }
+
+    public void OpenShopScene()
+    {
+        GameManager.Instance.SceneController.CurrentScene = "ShopScene";
+    }
+
+    public void OpenLobbyScene()
+    {
+        GameManager.Instance.SceneController.CurrentScene = "LobbyScene";
+    }
+
+    public void OpenIslandScene()
+    {
+        GameManager.Instance.SceneController.CurrentScene = "IslandScene";
+    }
+
+    public void UpdateEZCoinDisplay()
+    {
+        EZCoinTMP.text = PlayerData.EZCoin.ToString("n0");
     }
     #endregion
 }

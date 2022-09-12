@@ -19,6 +19,11 @@ public class ProfileController : MonoBehaviour
 
     [SerializeField] private ProfileCore ProfileCore;
 
+    private void Awake()
+    {
+        ProfileCore.ActualOwnedCharacters = new List<CharacterInstanceData>();
+    }
+
     private void Start()
     {
         ProfileCore.ShowCorePanels();

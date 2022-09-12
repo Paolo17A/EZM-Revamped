@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animalType: 4
   animalID: DINO
-  characterPanelSprite: {fileID: 0}
+  characterPanelSprite: {fileID: 21300000, guid: 56ada338a2d56ea47b3dadce61018ad9, type: 3}
   displaySprite: {fileID: 21300000, guid: 964fd755993b06140b7f85dfdd785b19, type: 3}
   undeployedSprite: {fileID: 0}
   deployedSprite: {fileID: 0}

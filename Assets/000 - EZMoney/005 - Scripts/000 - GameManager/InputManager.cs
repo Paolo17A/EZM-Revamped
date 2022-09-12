@@ -25,9 +25,8 @@ public class InputManager : MonoBehaviour
         return GameController.Menu.Hover.ReadValue<Vector2>();
     }
 
-    private void Update()
+    public Vector2 GetDraggedPosition()
     {
-        if (GameController.Menu.Interact.triggered)
-            GetMousePosition();
-    }
+        return GameController.Menu.Drag.ReadValue<Vector2>();
+    }    
 }
