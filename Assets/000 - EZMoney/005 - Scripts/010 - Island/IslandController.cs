@@ -16,6 +16,7 @@ public class IslandController : MonoBehaviour
     {
         if(GameManager.Instance.InputManager.GameController.Menu.Interact.triggered && !EventSystem.current.IsPointerOverGameObject())
         {
+            Debug.Log(GameManager.Instance.InputManager.GetDraggedPosition());
             mousePos = GameManager.Instance.MainCamera.ScreenToWorldPoint(GameManager.Instance.InputManager.GetMousePosition());
             mousePos2D = new Vector2(mousePos.x, mousePos.y);
             hit = Physics2D.Raycast(mousePos2D, Vector3.forward);

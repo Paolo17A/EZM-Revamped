@@ -106,7 +106,7 @@ public partial class @GameController : IInputActionCollection2, IDisposable
                     ""path"": ""<Touchscreen>/delta"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Touch"",
                     ""action"": ""Drag"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
