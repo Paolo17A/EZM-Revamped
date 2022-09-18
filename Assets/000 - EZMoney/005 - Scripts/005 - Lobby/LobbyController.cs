@@ -2,12 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PlayFab.ClientModels;
 
 public class LobbyController : MonoBehaviour
 {
     private void OnEnable()
     {
         GameManager.Instance.SceneController.AddActionLoadinList(LobbyCore.InitializeLobby());
+        if (!GameManager.Instance.DebugMode)
+            GameManager.Instance.SceneController.AddActionLoadinList(LobbyCore.GetUserVirtualCurrency());
         GameManager.Instance.SceneController.ActionPass = true;
         LobbyCore.onLobbySelectStateChange += LobbyStateChange;
     }
@@ -15,6 +18,12 @@ public class LobbyController : MonoBehaviour
     private void OnDisable()
     {
         LobbyCore.onLobbySelectStateChange -= LobbyStateChange;
+    }
+
+    private void Awake()
+    {
+        LobbyCore.getUserData = new GetUserDataRequest();
+        LobbyCore.getUserInventory = new GetUserInventoryRequest();
     }
 
     private void Start()

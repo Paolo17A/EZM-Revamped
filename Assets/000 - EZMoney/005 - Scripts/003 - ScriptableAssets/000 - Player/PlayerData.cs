@@ -54,11 +54,58 @@ public class PlayerData : ScriptableObject
     [field: SerializeField] public int CoinsGained { get; set; }
     [field: SerializeField] public int DailyClaimed { get; set; }
 
+    private void OnEnable()
+    {
+        ResetPlayerData();
+    }
+
+    private void OnDisable()
+    {
+        ResetPlayerData();
+    }
+
     public void ResetPlayerData()
     {
         if(!GameManager.Instance.DebugMode)
         {
-
+            PlayfabID = "";
+            DisplayName = "";
+            LUID = "";
+            SubscriptionLevel = "";
+            EZCoin = 0;
+            EZGem = 0;
+            DisplayPicture = "";
+            foreach(CharacterInstanceData character in OwnedCharacters)
+            {
+                character.CharacterInstanceID = "";
+                character.BaseCharacterData = null;
+                character.CharacterCurrentState = CharacterInstanceData.States.NONE;
+                character.CharacterCurrentStamina = 0;
+            }
+            LifetimeEZCoin = 0;
+            LifetimeEZGem = 0;
+            MiningEZCoin = 0;
+            FarmingEZCoin = 0;
+            FishingEZCoin = 0;
+            WoodcuttingEZCoin = 0;
+            OwnsAutoFarming = false;
+            OwnsAutoFishing = false;
+            OwnsAutoMining = false;
+            OwnsAutoWoodCutting = false;
+            CanAccessFarmA = false;
+            CanAccessFarmB = false;
+            CanAccessForestA = false;
+            CanAccessForestB = false;
+            CanAccessMineA = false;
+            CanAccessMineB = false;
+            CanAccessPondA = false;
+            CanAccessPondB = false;
+            DailyLogin = 0;
+            SocMedShared = 0;
+            AdsWatched = 0;
+            MinsPlayed = 0;
+            CoinsGained = 0;
+            DailyClaimed = 0;
         }
     }
 }

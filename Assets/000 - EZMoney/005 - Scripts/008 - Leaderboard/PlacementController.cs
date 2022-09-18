@@ -5,7 +5,7 @@ using TMPro;
 
 public class PlacementController : MonoBehaviour
 {
-    [field: SerializeField] public TextMeshProUGUI RankTMP { get; set; }
+    [field: SerializeField] public CanvasGroup PlacementCG { get; set; }
     [field: SerializeField] public TextMeshProUGUI NameTMP { get; set; }
     [field: SerializeField] public TextMeshProUGUI GemTMP { get; set; }
 }

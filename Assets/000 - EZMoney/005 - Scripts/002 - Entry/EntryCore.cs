@@ -44,12 +44,11 @@ public class EntryCore : MonoBehaviour
     #endregion
 
     //======================================================================
-    //[field: SerializeField] private LoginCore LoginCore { get; set; }
+    [field: SerializeField] private LoginCore LoginCore { get; set; }
     [field: SerializeField] private PlayerData PlayerData { get; set; }
 
     [Header("LOADING")]
     [SerializeField] private GameObject LoadingPanel;
-    [SerializeField] private TextMeshProUGUI LoadingTMP;
 
     [Header("PLAY PANEL")]
     [SerializeField] private RectTransform PlayRT;
@@ -103,7 +102,7 @@ public class EntryCore : MonoBehaviour
         }
         else
         {
-            //LoginCore.LoginWithPlayfab(UsernameLoginTMP.text, PasswordLoginTMP.text);
+            LoginCore.LoginWithPlayFab(UsernameLoginTMP.text, PasswordLoginTMP.text);
         }
     }
 
@@ -165,17 +164,15 @@ public class EntryCore : MonoBehaviour
     }
     #endregion
 
-    public void DisplayLoadingPanel(string message)
+    public void DisplayLoadingPanel()
     {
         LoadingPanel.SetActive(true);
-        LoadingTMP.text = message;
         GameManager.Instance.PanelActivated = true;
     }
 
     public void HideLoadingPanel()
     {
         LoadingPanel.SetActive(false);
-        LoadingTMP.text = "";
         GameManager.Instance.PanelActivated = false;
     }
 

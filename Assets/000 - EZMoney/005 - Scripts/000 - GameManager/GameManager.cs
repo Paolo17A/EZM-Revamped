@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using MyBox;
+using PlayFab;
+using PlayFab.ServerModels;
+using Newtonsoft.Json;
 
 public class GameManager : MonoBehaviour
 {
@@ -74,16 +77,25 @@ public class GameManager : MonoBehaviour
             SceneController.CurrentScene = SceneToLoad;
         else
         {
-            SceneController.CurrentScene = "GameplayScene";
-            /*if (string.IsNullOrEmpty(PlayFabSettings.TitleId))
-                PlayFabSettings.TitleId = "C1147";*/
+            SceneController.CurrentScene = "EntryScene";
+
+            PlayFabServerAPI.GetTitleData(new GetTitleDataRequest(),
+                resultCallback =>
+                {
+                    if (resultCallback.Data.ContainsKey("Version") && resultCallback.Data["Version"] != Application.version)
+                        DisplaySpecialErrorPanel("Game is outdated. Please update.");
+                },
+                errorCallback =>
+                {
+
+                });
         }
     }
 
     #region ERRORS
     public void DisplayDualLoginErrorPanel()
     {
-        DualLogInErrorPanel.SetActive(true);
+        DisplaySpecialErrorPanel("You have logged into another device");
     }
 
     public void DisplaySpecialErrorPanel(string _message)
@@ -110,6 +122,30 @@ public class GameManager : MonoBehaviour
         PanelActivated = false;
     }
     #endregion
+
+    public string DeserializeStringValue(string value, string key)
+    {
+        Dictionary<string, string> result = JsonConvert.DeserializeObject<Dictionary<string, string>>(value);
+
+        return result[key];
+    }
+
+    public int DeserializeIntValue(string value, string key)
+    {
+        Dictionary<string, int> result = JsonConvert.DeserializeObject<Dictionary<string, int>>(value);
+
+        return result[key];
+    }
+
+    public string SerializeIntValue(List<string> keyValues, List<int> values)
+    {
+        Dictionary<string, int> dict = new Dictionary<string, int>();
+
+        for (int a = 0; a < keyValues.Count; a++)
+            dict.Add(keyValues[a], values[a]);
+
+        return JsonConvert.SerializeObject(dict);
+    }
 
     public CharacterData GetProperCharacter(string characterID)
     {

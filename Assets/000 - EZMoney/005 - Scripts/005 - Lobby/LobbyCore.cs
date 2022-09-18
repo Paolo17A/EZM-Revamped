@@ -6,6 +6,8 @@ using TMPro;
 using MyBox;
 using System;
 using System.Linq;
+using PlayFab;
+using PlayFab.ClientModels;
 
 public class LobbyCore : MonoBehaviour
 {
@@ -53,7 +55,6 @@ public class LobbyCore : MonoBehaviour
 
     [Header("LOADING")]
     [SerializeField] private GameObject LoadingPanel;
-    [SerializeField] private TextMeshProUGUI LoadingTMP;
 
     [Header("CORE PANELS")]
     [SerializeField] private RectTransform CurrencyRT;
@@ -105,21 +106,26 @@ public class LobbyCore : MonoBehaviour
     [SerializeField] private List<Sprite> SubscriptionGemSprites;
     [SerializeField] private TextMeshProUGUI TimeElapsedTMP;
 
+    [Header("PLAYFAB VARIABLES")]
+    [ReadOnly] public GetUserDataRequest getUserData;
+    [ReadOnly] public GetUserInventoryRequest getUserInventory;
+
     [Header("DEBUGGER")]
     [SerializeField][ReadOnly] private int GameIndex;
+    private int failedCallbackCounter;
     //=========================================================================
     #endregion
 
     #region INITIALIZATION
     public IEnumerator InitializeLobby()
     {
-        if(GameManager.Instance.DebugMode)
+        if (GameManager.Instance.DebugMode)
         {
             UpdateEZCoinDisplay();
             EZGemTMP.text = PlayerData.EZGem.ToString("n0");
             ProfileImage.sprite = GameManager.Instance.GetProperCharacter(PlayerData.DisplayPicture).displaySprite;
             SubscriptionLevelTMP.text = PlayerData.SubscriptionLevel;
-            switch(PlayerData.SubscriptionLevel)
+            switch (PlayerData.SubscriptionLevel)
             {
                 case "PEARL":
                     SubscriptionGemImage.sprite = SubscriptionGemSprites[0];
@@ -141,7 +147,7 @@ public class LobbyCore : MonoBehaviour
                     break;
             }
 
-            if(GameManager.Instance.SceneController.CurrentScene == "LobbyScene")
+            if (GameManager.Instance.SceneController.CurrentScene == "LobbyScene")
             {
                 GameIndex = 0;
                 PreviousGameBtn.interactable = false;
@@ -152,13 +158,102 @@ public class LobbyCore : MonoBehaviour
                 // TODO: look for individual zone tickets when not in debug mode
                 IslandCore.UnlockIslandZones("MineA");
             }
-            
-        }
-        else
-        {
 
         }
+        else
+            GetUserDataPlayFab();
         yield return null;
+    }
+
+    private void GetUserDataPlayFab()
+    {
+        PlayFabClientAPI.GetUserData(getUserData,
+                resultCallback =>
+                {
+                    failedCallbackCounter = 0;
+                    if(resultCallback.Data.ContainsKey("LUID") && resultCallback.Data["LUID"].Value == PlayerData.LUID)
+                    {
+                        if (resultCallback.Data.ContainsKey("SubscriptionLevel"))
+                        {
+                            PlayerData.SubscriptionLevel = resultCallback.Data["SubscriptionLevel"].Value;
+                            SubscriptionLevelTMP.text = PlayerData.SubscriptionLevel;
+                            switch (PlayerData.SubscriptionLevel)
+                            {
+                                case "PEARL":
+                                    SubscriptionGemImage.sprite = SubscriptionGemSprites[0];
+                                    break;
+                                case "TOPAZ":
+                                    SubscriptionGemImage.sprite = SubscriptionGemSprites[1];
+                                    break;
+                                case "SAPHIRE":
+                                    SubscriptionGemImage.sprite = SubscriptionGemSprites[2];
+                                    break;
+                                case "EMERALD":
+                                    SubscriptionGemImage.sprite = SubscriptionGemSprites[3];
+                                    break;
+                                case "RUBY":
+                                    SubscriptionGemImage.sprite = SubscriptionGemSprites[4];
+                                    break;
+                                case "DIAMOND":
+                                    SubscriptionGemImage.sprite = SubscriptionGemSprites[5];
+                                    break;
+                            }
+                        }
+
+                        if (resultCallback.Data.ContainsKey("DisplayImage"))
+                        {
+                            PlayerData.DisplayPicture = resultCallback.Data["DisplayImage"].Value;
+                            ProfileImage.sprite = GameManager.Instance.GetProperCharacter(PlayerData.DisplayPicture).displaySprite;
+                        }
+
+                        if (GameManager.Instance.SceneController.CurrentScene == "LobbyScene")
+                        {
+                            GameIndex = 0;
+                            PreviousGameBtn.interactable = false;
+                        }
+
+                        else if (GameManager.Instance.SceneController.CurrentScene == "IslandScene")
+                        {
+                            // TODO: look for individual zone tickets when not in debug mode
+                            IslandCore.UnlockIslandZones("MineA");
+                        }
+                    }
+                    else
+                    {
+                        GameManager.Instance.DisplaySpecialErrorPanel("You have logged into another device");
+                    }
+                },
+                errorCallback =>
+                {
+                    ErrorCallback(errorCallback.Error,
+                        GetUserDataPlayFab,
+                        () => ProcessError(errorCallback.ErrorMessage));
+                });
+    }
+
+    public IEnumerator GetUserVirtualCurrency()
+    {
+        GetVirtualCurrencyPlayfab();
+        yield return null;
+    }
+
+    private void GetVirtualCurrencyPlayfab()
+    {
+        PlayFabClientAPI.GetUserInventory(getUserInventory,
+            resultCallback =>
+            {
+                failedCallbackCounter = 0;
+                PlayerData.EZCoin = resultCallback.VirtualCurrency["EC"];
+                PlayerData.EZGem = resultCallback.VirtualCurrency["EG"];
+                EZCoinTMP.text = PlayerData.EZCoin.ToString("n0");
+                EZGemTMP.text = PlayerData.EZGem.ToString("n0");
+            },
+            errorCallback =>
+            {
+                ErrorCallback(errorCallback.Error,
+                    GetVirtualCurrencyPlayfab,
+                    () => ProcessError(errorCallback.ErrorMessage));
+            });
     }
 
     public void NextGame()
@@ -310,6 +405,51 @@ public class LobbyCore : MonoBehaviour
     public void UpdateEZCoinDisplay()
     {
         EZCoinTMP.text = PlayerData.EZCoin.ToString("n0");
+    }
+
+    public void UpdateEZGemDisplay()
+    {
+        EZGemTMP.text = PlayerData.EZGem.ToString("n0");
+    }
+
+    public void DisplayLoadingPanel()
+    {
+        LoadingPanel.SetActive(true);
+        GameManager.Instance.PanelActivated = true;
+    }
+
+    public void HideLoadingPanel()
+    {
+        LoadingPanel.SetActive(false);
+        GameManager.Instance.PanelActivated = false;
+    }
+
+    private void ErrorCallback(PlayFabErrorCode errorCode, Action restartAction, Action errorAction)
+    {
+        if (errorCode == PlayFabErrorCode.ConnectionError)
+        {
+            failedCallbackCounter++;
+            if (failedCallbackCounter >= 5)
+                ProcessError("Connectivity error. Please connect to strong internet");
+            else
+                restartAction();
+        }
+        else if (errorCode == PlayFabErrorCode.InternalServerError)
+            ProcessSpecialError();
+        else
+            errorAction();
+    }
+
+    private void ProcessError(string errorMessage)
+    {
+        HideLoadingPanel();
+        GameManager.Instance.DisplayErrorPanel(errorMessage);
+    }
+
+    private void ProcessSpecialError()
+    {
+        HideLoadingPanel();
+        GameManager.Instance.DisplaySpecialErrorPanel("Server Error. Please restart the game");
     }
     #endregion
 }
