@@ -79,6 +79,7 @@ public class PlayerData : ScriptableObject
             {
                 character.CharacterInstanceID = "";
                 character.BaseCharacterData = null;
+                character.CharacterCurrentRole = CharacterInstanceData.Roles.NONE;
                 character.CharacterCurrentState = CharacterInstanceData.States.NONE;
                 character.CharacterCurrentStamina = 0;
             }

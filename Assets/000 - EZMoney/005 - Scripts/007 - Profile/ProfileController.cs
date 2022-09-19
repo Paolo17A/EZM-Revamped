@@ -2,12 +2,19 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PlayFab.ClientModels;
 
 public class ProfileController : MonoBehaviour
 {
     private void OnEnable()
     {
         GameManager.Instance.SceneController.AddActionLoadinList(ProfileCore.InitializeProfileScene());
+        if(!GameManager.Instance.DebugMode)
+        {
+            GameManager.Instance.SceneController.AddActionLoadinList(ProfileCore.GetUserInventory());
+            GameManager.Instance.SceneController.AddActionLoadinList(ProfileCore.GetPlayerStatistics());
+            //GameManager.Instance.SceneController.AddActionLoadinList(ProfileCore.ListAllCharacters());
+        }
         ProfileCore.onProfileSelectStateChange += ProfileStateChange;
         GameManager.Instance.SceneController.ActionPass = true;
     }
@@ -22,6 +29,11 @@ public class ProfileController : MonoBehaviour
     private void Awake()
     {
         ProfileCore.ActualOwnedCharacters = new List<CharacterInstanceData>();
+        ProfileCore.getUserData = new GetUserDataRequest();
+        ProfileCore.getUserInventory = new GetUserInventoryRequest();
+        ProfileCore.getPlayerStatistics = new GetPlayerStatisticsRequest();
+        ProfileCore.listUsersCharacters = new ListUsersCharactersRequest();
+        ProfileCore.getCharacterData = new GetCharacterDataRequest();
     }
 
     private void Start()

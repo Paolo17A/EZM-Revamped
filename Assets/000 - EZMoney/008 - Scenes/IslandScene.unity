@@ -10175,6 +10175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32408c84ac2d9d5449811b75176adb44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IslandCore: {fileID: 1442351375}
 --- !u!114 &1442351375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10201,6 +10202,20 @@ MonoBehaviour:
   PurchaseCG: {fileID: 625856047}
   PurchaseTMP: {fileID: 2086809719}
   ClickedZone: {fileID: 0}
+  getUserData:
+    Keys: []
+    PlayFabId: 
+  startPurchase:
+    CatalogVersion: 
+    Items: []
+    StoreId: 
+  payForPurchase:
+    Currency: 
+    OrderId: 
+    ProviderName: 
+    ProviderTransactionId: 
+  confirmPurchase:
+    OrderId: 
 --- !u!4 &1442351376
 Transform:
   m_ObjectHideFlags: 0

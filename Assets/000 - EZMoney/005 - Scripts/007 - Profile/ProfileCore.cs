@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using MyBox;
 using TMPro;
+using PlayFab;
+using PlayFab.ClientModels;
 
 public class ProfileCore : MonoBehaviour
 {
@@ -49,6 +51,9 @@ public class ProfileCore : MonoBehaviour
     //===========================================================
     [SerializeField] private PlayerData PlayerData;
 
+    [Header("LOADING PANEL")]
+    [SerializeField] private GameObject LoadingPanel;
+
     [Header("CORE PANELS")]
     [SerializeField] private RectTransform TopRT;
     [SerializeField] private CanvasGroup TopCG;
@@ -90,17 +95,26 @@ public class ProfileCore : MonoBehaviour
     [SerializeField] private RectTransform SwapRT;
     [SerializeField] private CanvasGroup SwapCG;
 
+    [Header("PLAYFAB VARIABLES")]
+    [ReadOnly] public GetUserDataRequest getUserData;
+    [ReadOnly] public GetUserInventoryRequest getUserInventory;
+    [ReadOnly] public GetPlayerStatisticsRequest getPlayerStatistics;
+    [ReadOnly] public ListUsersCharactersRequest listUsersCharacters;
+    [ReadOnly] public GetCharacterDataRequest getCharacterData;
+
     [Header("DEBUGGER")]
     [ReadOnly] public List<CharacterInstanceData> ActualOwnedCharacters;
     private GameObject spawnedCharacter;
     private CharacterImageController spawnedCharacterImage;
+    private int failedCallbackCounter;
 
     //===========================================================
     #endregion
 
+    #region INITIALIZATION
     public IEnumerator InitializeProfileScene()
     {
-        if(GameManager.Instance.DebugMode)
+        if (GameManager.Instance.DebugMode)
         {
             DisplayImage.sprite = GameManager.Instance.GetProperCharacter(PlayerData.DisplayPicture).displaySprite;
             DisplayNameTMP.text = PlayerData.DisplayName;
@@ -129,12 +143,12 @@ public class ProfileCore : MonoBehaviour
             foreach (CharacterInstanceData ownedCharacter in PlayerData.OwnedCharacters)
             {
                 if (ownedCharacter.BaseCharacterData != null)
-                     ActualOwnedCharacters.Add(ownedCharacter);
+                    ActualOwnedCharacters.Add(ownedCharacter);
                 else
                     break;
             }
 
-            foreach(CharacterInstanceData ownedCharacter in ActualOwnedCharacters)
+            foreach (CharacterInstanceData ownedCharacter in ActualOwnedCharacters)
             {
                 spawnedCharacter = Instantiate(CharacterPrefab);
                 spawnedCharacter.transform.SetParent(CharacterContainer);
@@ -149,8 +163,177 @@ public class ProfileCore : MonoBehaviour
             }
 
         }
+        else
+            GetUserDataPlayFab();
         yield return null;
     }
+
+    private void GetUserDataPlayFab()
+    {
+        DisplayLoadingPanel();
+        PlayFabClientAPI.GetUserData(getUserData,
+            resultCallback =>
+            {
+                failedCallbackCounter = 0;
+                if (resultCallback.Data.ContainsKey("LUID") && resultCallback.Data["LUID"].Value == PlayerData.LUID)
+                {
+                    PlayfabIDTMP.text = PlayerData.PlayfabID;
+                    PlayerData.DisplayPicture = resultCallback.Data["DisplayImage"].Value;
+                    DisplayImage.sprite = GameManager.Instance.GetProperCharacter(PlayerData.DisplayPicture).displaySprite;
+                    DisplayNameTMP.text = PlayerData.DisplayName;
+                }
+                else
+                    GameManager.Instance.DisplayDualLoginErrorPanel();
+            },
+            errorCallback =>
+            {
+                ErrorCallback(errorCallback.Error,
+                    GetUserDataPlayFab,
+                    () => ProcessError(errorCallback.ErrorMessage));
+            });
+    }
+
+    public IEnumerator GetUserInventory()
+    {
+        GetUserInventoryPlayFab();
+        yield return null;
+    }
+
+    public void GetUserInventoryPlayFab()
+    {
+        PlayFabClientAPI.GetUserInventory(getUserInventory,
+            resultCallback =>
+            {
+                failedCallbackCounter = 0;
+                PlayerData.EZCoin = resultCallback.VirtualCurrency["EC"];
+                PlayerData.EZGem = resultCallback.VirtualCurrency["EG"];
+                EZCoinsTMP.text = PlayerData.EZCoin.ToString("n0");
+                EZGemsTMP.text = PlayerData.EZGem.ToString("n0");
+                foreach(ItemInstance item in resultCallback.Inventory)
+                {
+                    if (item.ItemId == "MiningPilot")
+                        PlayerData.OwnsAutoMining = true;
+                    if (item.ItemId == "FarmingPilot")
+                        PlayerData.OwnsAutoFarming = true;
+                    if (item.ItemId == "FishingPilot")
+                        PlayerData.OwnsAutoFishing = true;
+                    if (item.ItemId == "WoodcuttingPilot")
+                        PlayerData.OwnsAutoWoodCutting = true;
+                }
+
+                if (!PlayerData.OwnsAutoMining)
+                    AutoMiningBtn.interactable = false;
+                if (!PlayerData.OwnsAutoFarming)
+                    AutoFarmingBtn.interactable = false;
+                if (!PlayerData.OwnsAutoFishing)
+                    AutoFishingBtn.interactable = false;
+                if (!PlayerData.OwnsAutoWoodCutting)
+                    AutoWoodcuttingBtn.interactable = false;
+
+                HideLoadingPanel();
+            },
+            errorCallback =>
+            {
+                ErrorCallback(errorCallback.Error,
+                    GetUserInventoryPlayFab,
+                    () => ProcessError(errorCallback.ErrorMessage));
+            });
+    }
+
+    public IEnumerator GetPlayerStatistics()
+    {
+        GetPlayerStatisticsPlayFab();
+        yield return null;
+    }
+
+    private void GetPlayerStatisticsPlayFab()
+    {
+        DisplayLoadingPanel();
+        PlayFabClientAPI.GetPlayerStatistics(getPlayerStatistics,
+            resultCallback =>
+            {
+                foreach(StatisticValue stat in resultCallback.Statistics)
+                {
+                    if(stat.StatisticName == "TotalEZCoinMining")
+                    {
+                        PlayerData.MiningEZCoin = stat.Value;
+                        MiningStatsTMP.text = PlayerData.MiningEZCoin.ToString("n0");
+                    }
+                    if (stat.StatisticName == "TotalEZCoinFarming")
+                    {
+                        PlayerData.FarmingEZCoin = stat.Value;
+                        FarmingStatsTMP.text = PlayerData.FarmingEZCoin.ToString("n0");
+                    }
+                    if (stat.StatisticName == "TotalEZCoinFishing")
+                    {
+                        PlayerData.FishingEZCoin = stat.Value;
+                        FishingStatsTMP.text = PlayerData.FishingEZCoin.ToString("n0");
+                    }
+                    if (stat.StatisticName == "TotalEZCoinWoodcutting")
+                    {
+                        PlayerData.WoodcuttingEZCoin = stat.Value;
+                        WoodcuttingStatsTMP.text = PlayerData.WoodcuttingEZCoin.ToString("n0");
+                    }
+                }
+                HideLoadingPanel();
+            },
+            errorCallback =>
+            {
+                ErrorCallback(errorCallback.Error,
+                    GetPlayerStatisticsPlayFab,
+                    () => ProcessError(errorCallback.ErrorMessage));
+            });
+    }
+
+    public void ListAllCharactersPlayFab()
+    {
+        DisplayLoadingPanel();
+        PlayFabClientAPI.GetAllUsersCharacters(listUsersCharacters,
+            resultCallback =>
+            {
+                for(int i = 0; i < resultCallback.Characters.Count; i++)
+                    PlayerData.OwnedCharacters[i].CharacterInstanceID = resultCallback.Characters[i].CharacterId;
+
+                GetEachCharacterDataPlayFab();
+            },
+            errorCallback =>
+            {
+                ErrorCallback(errorCallback.Error,
+                    ListAllCharactersPlayFab,
+                    () => ProcessError(errorCallback.ErrorMessage));
+            });
+    }
+
+    private void GetEachCharacterDataPlayFab()
+    {
+        ActualOwnedCharacters.Clear();
+        foreach (Transform child in CharacterContainer)
+            Destroy(child.gameObject);
+
+        foreach (CharacterInstanceData ownedCharacter in PlayerData.OwnedCharacters)
+        {
+            if (ownedCharacter.CharacterInstanceID != "")
+                ActualOwnedCharacters.Add(ownedCharacter);
+            else
+                break;
+        }
+        for (int i = 0; i < ActualOwnedCharacters.Count; i++)
+        {
+            spawnedCharacter = Instantiate(CharacterPrefab);
+            spawnedCharacter.transform.SetParent(CharacterContainer);
+            spawnedCharacter.transform.localScale = new Vector3(1, 1, 1);
+            spawnedCharacter.transform.localPosition = new Vector3(0, 0, 0);
+
+            spawnedCharacterImage = spawnedCharacter.GetComponent<CharacterImageController>();
+            spawnedCharacterImage.ImageCG.alpha = 0;
+            spawnedCharacterImage.CharacterID = ActualOwnedCharacters[i].CharacterInstanceID;
+            spawnedCharacterImage.ProfileCore = this;
+            spawnedCharacterImage.GetCharacterData(ActualOwnedCharacters[i]);
+        }
+        HideLoadingPanel();
+    }
+
+    #endregion
 
     #region PANELS
     public void ShowCorePanels()
@@ -180,7 +363,7 @@ public class ProfileCore : MonoBehaviour
         if (CharacterRT.gameObject.activeSelf)
             return;
         HideActivePanel();
-        GameManager.Instance.AnimationsLT.FadePanel(CharacterRT, null, CharacterCG, 0, 1, () => { });
+        GameManager.Instance.AnimationsLT.FadePanel(CharacterRT, null, CharacterCG, 0, 1, ListAllCharactersPlayFab);
     }
 
     public void ShowAutoPanel()
@@ -229,6 +412,46 @@ public class ProfileCore : MonoBehaviour
     {
         PlayerPrefs.DeleteAll();
         GameManager.Instance.SceneController.CurrentScene = "EntryScene";
+    }
+
+    public void DisplayLoadingPanel()
+    {
+        LoadingPanel.SetActive(true);
+        GameManager.Instance.PanelActivated = true;
+    }
+
+    public void HideLoadingPanel()
+    {
+        LoadingPanel.SetActive(false);
+        GameManager.Instance.PanelActivated = false;
+    }
+
+    private void ErrorCallback(PlayFabErrorCode errorCode, Action restartAction, Action errorAction)
+    {
+        if (errorCode == PlayFabErrorCode.ConnectionError)
+        {
+            failedCallbackCounter++;
+            if (failedCallbackCounter >= 5)
+                ProcessError("Connectivity error. Please connect to strong internet");
+            else
+                restartAction();
+        }
+        else if (errorCode == PlayFabErrorCode.InternalServerError)
+            ProcessSpecialError();
+        else
+            errorAction();
+    }
+
+    private void ProcessError(string errorMessage)
+    {
+        HideLoadingPanel();
+        GameManager.Instance.DisplayErrorPanel(errorMessage);
+    }
+
+    private void ProcessSpecialError()
+    {
+        HideLoadingPanel();
+        GameManager.Instance.DisplaySpecialErrorPanel("Server Error. Please restart the game");
     }
     #endregion
 }

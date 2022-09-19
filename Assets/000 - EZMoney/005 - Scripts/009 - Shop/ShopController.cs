@@ -2,12 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PlayFab.ClientModels;
 
 public class ShopController : MonoBehaviour
 {
     private void OnEnable()
     {
         GameManager.Instance.SceneController.AddActionLoadinList(ShopCore.InitializeShopScene());
+        if (!GameManager.Instance.DebugMode)
+            GameManager.Instance.SceneController.AddActionLoadinList(ShopCore.GetUserInventory());
         GameManager.Instance.SceneController.ActionPass = true;
         ShopCore.onShopStateChange += ShopStateChange;
     }
@@ -15,6 +18,12 @@ public class ShopController : MonoBehaviour
     private void OnDisable()
     {
         ShopCore.onShopStateChange -= ShopStateChange;
+    }
+
+    private void Awake()
+    {
+        ShopCore.getUserData = new GetUserDataRequest();
+        ShopCore.getUserInventory = new GetUserInventoryRequest();
     }
 
     private void ShopStateChange(object sender, EventArgs e)

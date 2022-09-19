@@ -10,7 +10,10 @@ public class LobbyController : MonoBehaviour
     {
         GameManager.Instance.SceneController.AddActionLoadinList(LobbyCore.InitializeLobby());
         if (!GameManager.Instance.DebugMode)
+        {
             GameManager.Instance.SceneController.AddActionLoadinList(LobbyCore.GetUserVirtualCurrency());
+
+        }
         GameManager.Instance.SceneController.ActionPass = true;
         LobbyCore.onLobbySelectStateChange += LobbyStateChange;
     }

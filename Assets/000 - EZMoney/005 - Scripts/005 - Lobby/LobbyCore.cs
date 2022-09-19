@@ -212,11 +212,11 @@ public class LobbyCore : MonoBehaviour
                             PreviousGameBtn.interactable = false;
                         }
 
-                        else if (GameManager.Instance.SceneController.CurrentScene == "IslandScene")
+                        /*else if (GameManager.Instance.SceneController.CurrentScene == "IslandScene")
                         {
                             // TODO: look for individual zone tickets when not in debug mode
                             IslandCore.UnlockIslandZones("MineA");
-                        }
+                        }*/
                     }
                     else
                     {
@@ -237,7 +237,7 @@ public class LobbyCore : MonoBehaviour
         yield return null;
     }
 
-    private void GetVirtualCurrencyPlayfab()
+    public void GetVirtualCurrencyPlayfab()
     {
         PlayFabClientAPI.GetUserInventory(getUserInventory,
             resultCallback =>
@@ -247,6 +247,25 @@ public class LobbyCore : MonoBehaviour
                 PlayerData.EZGem = resultCallback.VirtualCurrency["EG"];
                 EZCoinTMP.text = PlayerData.EZCoin.ToString("n0");
                 EZGemTMP.text = PlayerData.EZGem.ToString("n0");
+
+                if(GameManager.Instance.SceneController.CurrentScene == "IslandScene")
+                {
+                    foreach(ItemInstance item in resultCallback.Inventory)
+                    {
+                        if (item.ItemId == "MineA")
+                        {
+                            PlayerData.CanAccessMineA = true;
+                            IslandCore.MineA.UnlockZone();
+                        }
+                        if (item.ItemId == "MineB")
+                        {
+                            PlayerData.CanAccessMineB = true;
+                            IslandCore.MineB.UnlockZone();
+                        }
+                    }
+
+                }
+                HideLoadingPanel();
             },
             errorCallback =>
             {

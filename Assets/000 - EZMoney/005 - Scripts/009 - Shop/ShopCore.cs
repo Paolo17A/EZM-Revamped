@@ -6,6 +6,8 @@ using MyBox;
 using System;
 using System.Linq;
 using TMPro;
+using PlayFab;
+using PlayFab.ClientModels;
 
 public class ShopCore : MonoBehaviour
 {
@@ -45,6 +47,9 @@ public class ShopCore : MonoBehaviour
     //=========================================================
     [SerializeField] private PlayerData PlayerData;
 
+    [Header("LOADING PANEL")]
+    [SerializeField] private GameObject LoadingPanel;
+
     [Header("CORE PANEL")]
     [SerializeField] private RectTransform CoreRT;
     [SerializeField] private CanvasGroup CoreCG;
@@ -79,6 +84,11 @@ public class ShopCore : MonoBehaviour
     [SerializeField] private Sprite AutoNotSelectedSprite;
     [SerializeField] private Sprite CharactersSelectedSprite;
     [SerializeField] private Sprite CharactersNotSelectedSprite;
+
+    [Header("PLAYFAB VARIABLES")]
+    [ReadOnly] public GetUserDataRequest getUserData;
+    [ReadOnly] public GetUserInventoryRequest getUserInventory;
+    private int failedCallbackCounter;
     //=========================================================
     #endregion
 
@@ -107,9 +117,85 @@ public class ShopCore : MonoBehaviour
         }
         else
         {
-
+            GetUserDataPlayfab();
         }
         yield return null;
+    }
+
+    private void GetUserDataPlayfab()
+    {
+        DisplayLoadingPanel();
+        PlayFabClientAPI.GetUserData(getUserData,
+            resultCallback =>
+            {
+                failedCallbackCounter = 0;
+                if (resultCallback.Data.ContainsKey("LUID") && resultCallback.Data["LUID"].Value == PlayerData.LUID)
+                {
+                    GameManager.Instance.AnimationsLT.FadePanel(CoreRT, null, CoreCG, 0, 1, () => { });
+                    GameManager.Instance.AnimationsLT.FadePanel(ShopRT, null, ShopCG, 0, 1, () => { });
+                    CurrentShopState = ShopStates.CHARACTERS;
+                }
+                else
+                    GameManager.Instance.DisplayDualLoginErrorPanel();
+            },
+            errorCallback =>
+            {
+                ErrorCallback(errorCallback.Error,
+                    GetUserDataPlayfab,
+                    () => ProcessError(errorCallback.ErrorMessage));
+            });
+    }
+
+    public IEnumerator GetUserInventory()
+    {
+        GetUserInventoryPlayfab();
+        yield return null;
+    }
+
+    public void GetUserInventoryPlayfab()
+    {
+        PlayFabClientAPI.GetUserInventory(getUserInventory,
+            resultCallback =>
+            {
+                failedCallbackCounter = 0;
+                PlayerData.EZCoin = resultCallback.VirtualCurrency["EC"];
+                PlayerData.EZGem = resultCallback.VirtualCurrency["EG"];
+                UpdateEZCoinDisplay();
+                EZGemTMP.text = PlayerData.EZGem.ToString("n0");
+                CheckAutopilotPurchasability();
+                CheckCharacterPurchasability();
+                foreach(ItemInstance item in resultCallback.Inventory)
+                {
+                    if (item.ItemId == "MiningPilot")
+                    {
+                        PlayerData.OwnsAutoMining = true;
+                        AutoMiningBtn.interactable = false;
+                    }
+                    if (item.ItemId == "FarmingPilot")
+                    {
+                        PlayerData.OwnsAutoFarming = true;
+                        AutoFarmingBtn.interactable = false;
+                    }
+                    if (item.ItemId == "FishingPilot")
+                    {
+                        PlayerData.OwnsAutoFishing = true;
+                        AutoFishingBtn.interactable = false;
+                    }
+                    if (item.ItemId == "WoodcuttingPilot")
+                    {
+                        PlayerData.OwnsAutoWoodCutting = true;
+                        AutoWoodcuttingBtn.interactable = false;
+                    }
+                }
+
+                HideLoadingPanel();
+            },
+            errorCallback =>
+            {
+                ErrorCallback(errorCallback.Error,
+                    GetUserInventoryPlayfab,
+                    () => ProcessError(errorCallback.ErrorMessage));
+            });
     }
 
     #region PANELS
@@ -169,6 +255,44 @@ public class ShopCore : MonoBehaviour
                 character.PurchaseBtn.interactable = false;
     }
 
+    public void DisplayLoadingPanel()
+    {
+        LoadingPanel.SetActive(true);
+        GameManager.Instance.PanelActivated = true;
+    }
 
+    public void HideLoadingPanel()
+    {
+        LoadingPanel.SetActive(false);
+        GameManager.Instance.PanelActivated = false;
+    }
+
+    private void ErrorCallback(PlayFabErrorCode errorCode, Action restartAction, Action errorAction)
+    {
+        if (errorCode == PlayFabErrorCode.ConnectionError)
+        {
+            failedCallbackCounter++;
+            if (failedCallbackCounter >= 5)
+                ProcessError("Connectivity error. Please connect to strong internet");
+            else
+                restartAction();
+        }
+        else if (errorCode == PlayFabErrorCode.InternalServerError)
+            ProcessSpecialError();
+        else
+            errorAction();
+    }
+
+    private void ProcessError(string errorMessage)
+    {
+        HideLoadingPanel();
+        GameManager.Instance.DisplayErrorPanel(errorMessage);
+    }
+
+    private void ProcessSpecialError()
+    {
+        HideLoadingPanel();
+        GameManager.Instance.DisplaySpecialErrorPanel("Server Error. Please restart the game");
+    }
     #endregion
 }

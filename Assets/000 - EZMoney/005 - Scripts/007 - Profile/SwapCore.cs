@@ -4,9 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using MyBox;
+using PlayFab;
+using PlayFab.ClientModels;
+using System;
 
 public class SwapCore : MonoBehaviour
 {
+    //========================================================================================
     [SerializeField] private ProfileCore ProfileCore;
     [SerializeField] private PlayerData PlayerData;
 
@@ -16,8 +20,19 @@ public class SwapCore : MonoBehaviour
     [SerializeField] private TMP_InputField EZGemTMP;
     [SerializeField] private Button SwapBtn;
 
+    [Header("PLAYFAB VARIABLES")]
+    private GetUserDataRequest getUserData;
+    private GetUserInventoryRequest getUserInventory;
+
     [Header("DEBUGGER")]
     [SerializeField][ReadOnly] private bool willSwapEZGem;
+    private int failedCallbackCounter;
+    //========================================================================================
+    private void Awake()
+    {
+        getUserData = new GetUserDataRequest();
+        getUserInventory = new GetUserInventoryRequest();
+    }
 
     public void InterchangeInput()
     {
@@ -134,5 +149,83 @@ public class SwapCore : MonoBehaviour
             EZGemTMP.text = "";
             SwapBtn.interactable = false;
         }
+        else
+        {
+            ProfileCore.DisplayLoadingPanel();
+            PlayFabClientAPI.GetUserData(getUserData,
+                resultCallback =>
+                {
+                    if (resultCallback.Data.ContainsKey("LUID") && resultCallback.Data["LUID"].Value == PlayerData.LUID)
+                    {
+                        string functionName = "";
+                        if (willSwapEZGem)
+                            functionName = "SwapGemForCoin";
+                        else
+                            functionName = "SwapCoinForGem";
+                        PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+                        {
+                            FunctionName = functionName,
+                            FunctionParameter = new { coin = int.Parse(EZCoinTMP.text), gem = int.Parse(EZGemTMP.text) },
+                            GeneratePlayStreamEvent = true
+                        },
+                        resultCallback =>
+                        {
+                            failedCallbackCounter = 0;
+                            EZCoinTMP.text = "";
+                            EZGemTMP.text = "";
+                            SwapBtn.interactable = false;
+                            ProfileCore.GetUserInventoryPlayFab();
+
+                        },
+                        errorCallback =>
+                        {
+                            ErrorCallback(errorCallback.Error,
+                                SwapCurrencies,
+                                () => ProcessError(errorCallback.ErrorMessage));
+                        });
+                    }
+                    else
+                    {
+                        ProfileCore.HideLoadingPanel();
+                        GameManager.Instance.DisplayDualLoginErrorPanel();
+                    }
+                },
+                errorCallback =>
+                {
+                    ErrorCallback(errorCallback.Error,
+                        SwapCurrencies,
+                        () => ProcessError(errorCallback.ErrorMessage));
+                });
+        }
     }
+
+    #region UTILITY
+    private void ErrorCallback(PlayFabErrorCode errorCode, Action restartAction, Action errorAction)
+    {
+        if (errorCode == PlayFabErrorCode.ConnectionError)
+        {
+            failedCallbackCounter++;
+            if (failedCallbackCounter >= 5)
+                ProcessError("Connectivity error. Please connect to strong internet");
+            else
+                restartAction();
+        }
+        else if (errorCode == PlayFabErrorCode.InternalServerError)
+            ProcessSpecialError();
+        else
+            errorAction();
+    }
+
+    private void ProcessError(string errorMessage)
+    {
+        ProfileCore.HideLoadingPanel();
+        GameManager.Instance.DisplayErrorPanel(errorMessage);
+    }
+
+    private void ProcessSpecialError()
+    {
+        ProfileCore.HideLoadingPanel();
+        GameManager.Instance.DisplaySpecialErrorPanel("Server Error. Please restart the game");
+    }
+    #endregion
 }
