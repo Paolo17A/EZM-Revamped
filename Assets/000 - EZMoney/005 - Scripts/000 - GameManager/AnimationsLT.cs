@@ -71,6 +71,19 @@ public class AnimationsLT : MonoBehaviour
         });
     }
 
+    public void ShowSlide(RectTransform objToShow, Vector2 startPosition, Vector2 destination, Action action)
+    {
+        objToShow.anchoredPosition = startPosition;
+        objToShow.gameObject.SetActive(true);
+
+        LeanTween.move(objToShow, destination, animationSpeed).setEase(easeType).setOnComplete(() =>
+        {
+            gameManager.CanUseButtons = true;
+            action?.Invoke();
+        });
+
+    }
+
     public void FadePanel(RectTransform objToShow, RectTransform objToHide, CanvasGroup cg, float from, float to, Action action)
     {
         //objToShow.anchoredPosition = Vector2.zero;

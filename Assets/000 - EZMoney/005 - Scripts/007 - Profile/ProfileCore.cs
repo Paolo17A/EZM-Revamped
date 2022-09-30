@@ -8,6 +8,7 @@ using MyBox;
 using TMPro;
 using PlayFab;
 using PlayFab.ClientModels;
+using static CharacterInstanceData;
 
 public class ProfileCore : MonoBehaviour
 {
@@ -21,7 +22,8 @@ public class ProfileCore : MonoBehaviour
         PROFILE,
         CHARACTER,
         AUTO,
-        SWAP
+        SWAP,
+        AUTODATA
     }
 
     private event EventHandler profileStateChange;
@@ -95,6 +97,15 @@ public class ProfileCore : MonoBehaviour
     [SerializeField] private RectTransform SwapRT;
     [SerializeField] private CanvasGroup SwapCG;
 
+    [Header("AUTOPILOT DATA PANEL")]
+    [SerializeField] private RectTransform AutoPilotDataRT;
+    [SerializeField] private CanvasGroup AutoPilotDataCG;
+    [field: SerializeField][field: ReadOnly] public AutopilotDataCore SelectedAutoPilot;
+    [field: SerializeField] public TextMeshProUGUI AutoTimeLeftTMP { get; set; }
+    [field: SerializeField] public TextMeshProUGUI WorkersDeployedTMP { get; set; }
+    [field: SerializeField] public Image SelectedPilotImage { get; set; }
+
+
     [Header("PLAYFAB VARIABLES")]
     [ReadOnly] public GetUserDataRequest getUserData;
     [ReadOnly] public GetUserInventoryRequest getUserInventory;
@@ -114,57 +125,57 @@ public class ProfileCore : MonoBehaviour
     #region INITIALIZATION
     public IEnumerator InitializeProfileScene()
     {
-        if (GameManager.Instance.DebugMode)
+        DisplayImage.sprite = GameManager.Instance.GetProperCharacter(PlayerData.DisplayPicture).displaySprite;
+        DisplayNameTMP.text = PlayerData.DisplayName;
+        PlayfabIDTMP.text = PlayerData.PlayfabID;
+        EZCoinsTMP.text = PlayerData.EZCoin.ToString("n0");
+        EZGemsTMP.text = PlayerData.EZGem.ToString("n0");
+        MiningStatsTMP.text = PlayerData.MiningEZCoin.ToString("n0");
+        FarmingStatsTMP.text = PlayerData.FarmingEZCoin.ToString("n0");
+        FishingStatsTMP.text = PlayerData.FishingEZCoin.ToString("n0");
+        WoodcuttingStatsTMP.text = PlayerData.WoodcuttingEZCoin.ToString("n0");
+
+        if (!PlayerData.OwnsAutoMining)
+            AutoMiningBtn.interactable = false;
+        if (!PlayerData.OwnsAutoFarming)
+            AutoFarmingBtn.interactable = false;
+        if (!PlayerData.OwnsAutoFishing)
+            AutoFishingBtn.interactable = false;
+        if (!PlayerData.OwnsAutoWoodCutting)
+            AutoWoodcuttingBtn.interactable = false;
+
+        //CHARACTER INITIALIZATION
+        ActualOwnedCharacters.Clear();
+        foreach (Transform child in CharacterContainer)
+            Destroy(child.gameObject);
+
+        foreach (CharacterInstanceData ownedCharacter in PlayerData.OwnedCharacters)
         {
-            DisplayImage.sprite = GameManager.Instance.GetProperCharacter(PlayerData.DisplayPicture).displaySprite;
-            DisplayNameTMP.text = PlayerData.DisplayName;
-            PlayfabIDTMP.text = PlayerData.PlayfabID;
-            EZCoinsTMP.text = PlayerData.EZCoin.ToString("n0");
-            EZGemsTMP.text = PlayerData.EZGem.ToString("n0");
-            MiningStatsTMP.text = PlayerData.MiningEZCoin.ToString("n0");
-            FarmingStatsTMP.text = PlayerData.FarmingEZCoin.ToString("n0");
-            FishingStatsTMP.text = PlayerData.FishingEZCoin.ToString("n0");
-            WoodcuttingStatsTMP.text = PlayerData.WoodcuttingEZCoin.ToString("n0");
-
-            if (!PlayerData.OwnsAutoMining)
-                AutoMiningBtn.interactable = false;
-            if (!PlayerData.OwnsAutoFarming)
-                AutoFarmingBtn.interactable = false;
-            if (!PlayerData.OwnsAutoFishing)
-                AutoFishingBtn.interactable = false;
-            if (!PlayerData.OwnsAutoWoodCutting)
-                AutoWoodcuttingBtn.interactable = false;
-
-            //CHARACTER INITIALIZATION
-            ActualOwnedCharacters.Clear();
-            foreach (Transform child in CharacterContainer)
-                Destroy(child.gameObject);
-
-            foreach (CharacterInstanceData ownedCharacter in PlayerData.OwnedCharacters)
-            {
-                if (ownedCharacter.BaseCharacterData != null)
-                    ActualOwnedCharacters.Add(ownedCharacter);
-                else
-                    break;
-            }
-
-            foreach (CharacterInstanceData ownedCharacter in ActualOwnedCharacters)
-            {
-                spawnedCharacter = Instantiate(CharacterPrefab);
-                spawnedCharacter.transform.SetParent(CharacterContainer);
-                spawnedCharacter.transform.localScale = new Vector3(1, 1, 1);
-                spawnedCharacter.transform.localPosition = new Vector3(0, 0, 0);
-
-                spawnedCharacterImage = spawnedCharacter.GetComponent<CharacterImageController>();
-                spawnedCharacterImage.CharacterID = ownedCharacter.CharacterInstanceID;
-                spawnedCharacterImage.CharacterData = ownedCharacter.BaseCharacterData;
-                spawnedCharacterImage.SetCharacterImageData();
-                spawnedCharacterImage.StaminaTMP.text = ownedCharacter.CharacterCurrentStamina.ToString() + "/" + ownedCharacter.BaseCharacterData.stamina.ToString();
-            }
-
+            if (ownedCharacter.BaseCharacterData != null)
+                ActualOwnedCharacters.Add(ownedCharacter);
+            else
+                break;
         }
-        else
-            GetUserDataPlayFab();
+
+        foreach (CharacterInstanceData ownedCharacter in ActualOwnedCharacters)
+        {
+            spawnedCharacter = Instantiate(CharacterPrefab);
+            spawnedCharacter.transform.SetParent(CharacterContainer);
+            spawnedCharacter.transform.localScale = new Vector3(1, 1, 1);
+            spawnedCharacter.transform.localPosition = new Vector3(0, 0, 0);
+
+            spawnedCharacterImage = spawnedCharacter.GetComponent<CharacterImageController>();
+            spawnedCharacterImage.CharacterID = ownedCharacter.CharacterInstanceID;
+            spawnedCharacterImage.CharacterData = ownedCharacter.BaseCharacterData;
+            spawnedCharacterImage.SetCharacterImageData();
+            spawnedCharacterImage.StaminaTMP.text = ownedCharacter.CharacterCurrentStamina.ToString() + "/" + ownedCharacter.BaseCharacterData.stamina.ToString();
+        }
+        yield return null;
+    }
+
+    public IEnumerator GetUserData()
+    {
+        GetUserDataPlayFab();
         yield return null;
     }
 
@@ -181,6 +192,10 @@ public class ProfileCore : MonoBehaviour
                     PlayerData.DisplayPicture = resultCallback.Data["DisplayImage"].Value;
                     DisplayImage.sprite = GameManager.Instance.GetProperCharacter(PlayerData.DisplayPicture).displaySprite;
                     DisplayNameTMP.text = PlayerData.DisplayName;
+
+                    GameManager.Instance.SceneController.AddActionLoadinList(GetUserInventory());
+                    GameManager.Instance.SceneController.AddActionLoadinList(GetPlayerStatistics());
+                    GameManager.Instance.SceneController.AddActionLoadinList(ListAllCharacters());
                 }
                 else
                     GameManager.Instance.DisplayDualLoginErrorPanel();
@@ -220,6 +235,11 @@ public class ProfileCore : MonoBehaviour
                     if (item.ItemId == "WoodcuttingPilot")
                         PlayerData.OwnsAutoWoodCutting = true;
                 }
+
+                MiningStatsTMP.text = PlayerData.MiningEZCoin.ToString("n0");
+                FarmingStatsTMP.text = PlayerData.FarmingEZCoin.ToString("n0");
+                FishingStatsTMP.text = PlayerData.FishingEZCoin.ToString("n0");
+                WoodcuttingStatsTMP.text = PlayerData.WoodcuttingEZCoin.ToString("n0");
 
                 if (!PlayerData.OwnsAutoMining)
                     AutoMiningBtn.interactable = false;
@@ -285,6 +305,12 @@ public class ProfileCore : MonoBehaviour
             });
     }
 
+    private IEnumerator ListAllCharacters()
+    {
+        ListAllCharactersPlayFab();
+        yield return null;
+    }
+
     public void ListAllCharactersPlayFab()
     {
         DisplayLoadingPanel();
@@ -292,7 +318,9 @@ public class ProfileCore : MonoBehaviour
             resultCallback =>
             {
                 for(int i = 0; i < resultCallback.Characters.Count; i++)
+                {
                     PlayerData.OwnedCharacters[i].CharacterInstanceID = resultCallback.Characters[i].CharacterId;
+                }
 
                 GetEachCharacterDataPlayFab();
             },
@@ -363,7 +391,11 @@ public class ProfileCore : MonoBehaviour
         if (CharacterRT.gameObject.activeSelf)
             return;
         HideActivePanel();
-        GameManager.Instance.AnimationsLT.FadePanel(CharacterRT, null, CharacterCG, 0, 1, ListAllCharactersPlayFab);
+        GameManager.Instance.AnimationsLT.FadePanel(CharacterRT, null, CharacterCG, 0, 1, () =>
+        {
+            /*if (!GameManager.Instance.DebugMode)
+                ListAllCharactersPlayFab();*/
+        } );
     }
 
     public void ShowAutoPanel()
@@ -380,6 +412,21 @@ public class ProfileCore : MonoBehaviour
             return;
         HideActivePanel();
         GameManager.Instance.AnimationsLT.FadePanel(SwapRT, null, SwapCG, 0, 1, () => { });
+    }
+
+    public void ShowAutoDataPanel()
+    {
+        GameManager.Instance.AnimationsLT.FadePanel(AutoPilotDataRT, null, AutoPilotDataCG, 0, 1, () => { });
+    }
+    
+    public void HideAutoDataPanel()
+    {
+        GameManager.Instance.AnimationsLT.FadePanel(AutoPilotDataRT, AutoPilotDataRT, AutoPilotDataCG, 1, 0, () => 
+        {
+            SelectedAutoPilot = null;
+            CurrentProfileState = ProfileStates.AUTO; 
+        });
+
     }
 
     public void HideActivePanel()

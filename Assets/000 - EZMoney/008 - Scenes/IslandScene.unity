@@ -443,6 +443,7 @@ GameObject:
   - component: {fileID: 107440581}
   - component: {fileID: 107440580}
   - component: {fileID: 107440582}
+  - component: {fileID: 107440583}
   m_Layer: 0
   m_Name: PondA
   m_TagString: IslandZone
@@ -506,10 +507,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IslandCore: {fileID: 1442351375}
   PlayerData: {fileID: 11400000, guid: e30bd1d4d26f63c469821ae7d1847da9, type: 2}
+  ButtonScaler: {fileID: 107440583}
   <ZoneName>k__BackingField: PondA
   <ZonePrice>k__BackingField: 10000
   NameSprite: {fileID: 1088756256}
   ZoneSprite: {fileID: 1273043376}
+--- !u!114 &107440583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 107440579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d134f18dea3271479e67b71fc37bddb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &123915333
 GameObject:
   m_ObjectHideFlags: 0
@@ -1431,6 +1445,7 @@ GameObject:
   - component: {fileID: 197626758}
   - component: {fileID: 197626757}
   - component: {fileID: 197626759}
+  - component: {fileID: 197626760}
   m_Layer: 0
   m_Name: FarmA
   m_TagString: IslandZone
@@ -1494,10 +1509,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IslandCore: {fileID: 1442351375}
   PlayerData: {fileID: 11400000, guid: e30bd1d4d26f63c469821ae7d1847da9, type: 2}
+  ButtonScaler: {fileID: 197626760}
   <ZoneName>k__BackingField: FarmA
   <ZonePrice>k__BackingField: 10000
   NameSprite: {fileID: 383317240}
   ZoneSprite: {fileID: 1998446491}
+--- !u!114 &197626760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 197626756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d134f18dea3271479e67b71fc37bddb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &198059438
 GameObject:
   m_ObjectHideFlags: 0
@@ -1909,6 +1937,7 @@ GameObject:
   - component: {fileID: 226673994}
   - component: {fileID: 226673993}
   - component: {fileID: 226673995}
+  - component: {fileID: 226673996}
   m_Layer: 0
   m_Name: PondB
   m_TagString: IslandZone
@@ -1972,10 +2001,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IslandCore: {fileID: 1442351375}
   PlayerData: {fileID: 11400000, guid: e30bd1d4d26f63c469821ae7d1847da9, type: 2}
+  ButtonScaler: {fileID: 226673996}
   <ZoneName>k__BackingField: PondB
   <ZonePrice>k__BackingField: 10000
   NameSprite: {fileID: 1655887680}
   ZoneSprite: {fileID: 71403841}
+--- !u!114 &226673996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 226673992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d134f18dea3271479e67b71fc37bddb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &233784861
 GameObject:
   m_ObjectHideFlags: 0
@@ -4764,6 +4806,7 @@ GameObject:
   - component: {fileID: 558366684}
   - component: {fileID: 558366683}
   - component: {fileID: 558366685}
+  - component: {fileID: 558366686}
   m_Layer: 0
   m_Name: MineB
   m_TagString: IslandZone
@@ -4827,10 +4870,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IslandCore: {fileID: 1442351375}
   PlayerData: {fileID: 11400000, guid: e30bd1d4d26f63c469821ae7d1847da9, type: 2}
+  ButtonScaler: {fileID: 558366686}
   <ZoneName>k__BackingField: MineB
   <ZonePrice>k__BackingField: 10000
   NameSprite: {fileID: 840187230}
   ZoneSprite: {fileID: 1812839170}
+--- !u!114 &558366686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 558366682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d134f18dea3271479e67b71fc37bddb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &563870692
 GameObject:
   m_ObjectHideFlags: 0
@@ -6127,6 +6183,7 @@ GameObject:
   - component: {fileID: 838696406}
   - component: {fileID: 838696405}
   - component: {fileID: 838696407}
+  - component: {fileID: 838696408}
   m_Layer: 0
   m_Name: ForestB
   m_TagString: IslandZone
@@ -6190,10 +6247,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IslandCore: {fileID: 1442351375}
   PlayerData: {fileID: 11400000, guid: e30bd1d4d26f63c469821ae7d1847da9, type: 2}
+  ButtonScaler: {fileID: 838696408}
   <ZoneName>k__BackingField: ForestB
   <ZonePrice>k__BackingField: 10000
   NameSprite: {fileID: 644605857}
   ZoneSprite: {fileID: 563870694}
+--- !u!114 &838696408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 838696404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d134f18dea3271479e67b71fc37bddb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &840187228
 GameObject:
   m_ObjectHideFlags: 0
@@ -6985,9 +7055,9 @@ RectTransform:
   m_Father: {fileID: 1071683541}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -550.5, y: -440}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 409.5, y: 100}
   m_SizeDelta: {x: 589, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1006274101
@@ -8675,6 +8745,7 @@ GameObject:
   - component: {fileID: 1202221079}
   - component: {fileID: 1202221078}
   - component: {fileID: 1202221080}
+  - component: {fileID: 1202221081}
   m_Layer: 0
   m_Name: ForestA
   m_TagString: IslandZone
@@ -8738,10 +8809,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IslandCore: {fileID: 1442351375}
   PlayerData: {fileID: 11400000, guid: e30bd1d4d26f63c469821ae7d1847da9, type: 2}
+  ButtonScaler: {fileID: 1202221081}
   <ZoneName>k__BackingField: ForestA
   <ZonePrice>k__BackingField: 10000
   NameSprite: {fileID: 1734185933}
   ZoneSprite: {fileID: 128821507}
+--- !u!114 &1202221081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1202221077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d134f18dea3271479e67b71fc37bddb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1203391522
 GameObject:
   m_ObjectHideFlags: 0
@@ -9612,6 +9696,7 @@ GameObject:
   - component: {fileID: 1318296152}
   - component: {fileID: 1318296151}
   - component: {fileID: 1318296153}
+  - component: {fileID: 1318296154}
   m_Layer: 0
   m_Name: MineA
   m_TagString: IslandZone
@@ -9675,10 +9760,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IslandCore: {fileID: 1442351375}
   PlayerData: {fileID: 11400000, guid: e30bd1d4d26f63c469821ae7d1847da9, type: 2}
+  ButtonScaler: {fileID: 1318296154}
   <ZoneName>k__BackingField: MineA
   <ZonePrice>k__BackingField: 10000
   NameSprite: {fileID: 1969177603}
   ZoneSprite: {fileID: 1473419413}
+--- !u!114 &1318296154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1318296150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d134f18dea3271479e67b71fc37bddb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1318443799
 GameObject:
   m_ObjectHideFlags: 0
@@ -10078,6 +10176,7 @@ GameObject:
   - component: {fileID: 1423088762}
   - component: {fileID: 1423088761}
   - component: {fileID: 1423088763}
+  - component: {fileID: 1423088764}
   m_Layer: 0
   m_Name: FarmB
   m_TagString: IslandZone
@@ -10141,10 +10240,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IslandCore: {fileID: 1442351375}
   PlayerData: {fileID: 11400000, guid: e30bd1d4d26f63c469821ae7d1847da9, type: 2}
+  ButtonScaler: {fileID: 1423088764}
   <ZoneName>k__BackingField: FarmB
   <ZonePrice>k__BackingField: 10000
   NameSprite: {fileID: 2045370641}
   ZoneSprite: {fileID: 1076717544}
+--- !u!114 &1423088764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1423088760}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d134f18dea3271479e67b71fc37bddb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1442351373
 GameObject:
   m_ObjectHideFlags: 0
@@ -11557,9 +11669,9 @@ RectTransform:
   m_Father: {fileID: 1071683541}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 806.1, y: -401.5}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -153.90002, y: 138.5}
   m_SizeDelta: {x: 276, y: 241}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1564433362

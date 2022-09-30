@@ -16,11 +16,9 @@ MonoBehaviour:
   animalID: PENGUIN
   characterPanelSprite: {fileID: 21300000, guid: df61ae07864642c4b84d3dcd84d827fb, type: 3}
   displaySprite: {fileID: 21300000, guid: 1cb0864be92b40846a9dc839bbbf19c7, type: 3}
-  undeployedSprite: {fileID: 0}
-  deployedSprite: {fileID: 0}
-  characterContainerPrefab: {fileID: 0}
-  idlePrefab: {fileID: 0}
-  miningPrefab: {fileID: 0}
+  undeployedSprite: {fileID: 21300000, guid: 09f0aa6de66e13a4f9d504ef60e90fd7, type: 3}
+  deployedSprite: {fileID: 21300000, guid: 8aee17f4e5ac6bf489a48eef6404ac85, type: 3}
+  AnimatedCharacterPrefab: {fileID: 2180976410973668413, guid: 98696ac40a427174c98747d37ff2d2b5, type: 3}
   strength: 5
   speed: 6
   stamina: 9

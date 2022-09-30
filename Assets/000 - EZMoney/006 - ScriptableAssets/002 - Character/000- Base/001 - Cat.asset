@@ -16,11 +16,9 @@ MonoBehaviour:
   animalID: CAT
   characterPanelSprite: {fileID: 21300000, guid: 38d35ce67bea9f848908a30b6cc68cd1, type: 3}
   displaySprite: {fileID: 21300000, guid: 09c0b44f2687c3b48ac754e5f01f4b72, type: 3}
-  undeployedSprite: {fileID: 0}
-  deployedSprite: {fileID: 0}
-  characterContainerPrefab: {fileID: 0}
-  idlePrefab: {fileID: 0}
-  miningPrefab: {fileID: 0}
+  undeployedSprite: {fileID: 21300000, guid: 4391cb88c7b8d25499be7b0f87e17597, type: 3}
+  deployedSprite: {fileID: 21300000, guid: be8087c25e8bac94f820e9d01a8feeca, type: 3}
+  AnimatedCharacterPrefab: {fileID: 2224846409448270729, guid: e2b67e19cbfd61e45ab0fb6cae293e1f, type: 3}
   strength: 5
   speed: 7
   stamina: 8

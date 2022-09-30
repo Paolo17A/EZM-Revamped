@@ -206,17 +206,33 @@ public class LobbyCore : MonoBehaviour
                             ProfileImage.sprite = GameManager.Instance.GetProperCharacter(PlayerData.DisplayPicture).displaySprite;
                         }
 
+                        if (resultCallback.Data.ContainsKey("CharactersRefreshed"))
+                        {
+                            if (resultCallback.Data["CharactersRefreshed"].Value == "0")
+                            {
+                                Debug.Log("WIll reset character stamina");
+                                PlayerData.ElapsedGameplayTime = new TimeSpan(0, 0, 0);
+                                PlayerPrefs.SetInt("ElapsedMinutes", 0);
+                                PlayerPrefs.SetInt("ElapsedSeconds", 0);
+                                GameManager.Instance.SceneController.AddActionLoadinList(ResetCharacterStamina());
+                            }
+
+                            TimeElapsedTMP.text = string.Format("{0:D2}:{1:D2}:{2:D2}", PlayerData.ElapsedGameplayTime.Hours, PlayerData.ElapsedGameplayTime.Minutes, PlayerData.ElapsedGameplayTime.Seconds);
+                        }
+
+                        if(resultCallback.Data.ContainsKey("AutoPilot"))
+                        {
+                            PlayerData.AutoMiningTimeLeft = GameManager.Instance.DeserializeIntValue(resultCallback.Data["AutoPilot"].Value, "Mining");
+                            PlayerData.AutoFarmingTimeLeft = GameManager.Instance.DeserializeIntValue(resultCallback.Data["AutoPilot"].Value, "Farming");
+                            PlayerData.AutoFishingTimeLeft = GameManager.Instance.DeserializeIntValue(resultCallback.Data["AutoPilot"].Value, "Fishing");
+                            PlayerData.AutoWoodcuttingTimeLeft = GameManager.Instance.DeserializeIntValue(resultCallback.Data["AutoPilot"].Value, "Woodcutting");
+                        }
+
                         if (GameManager.Instance.SceneController.CurrentScene == "LobbyScene")
                         {
                             GameIndex = 0;
                             PreviousGameBtn.interactable = false;
                         }
-
-                        /*else if (GameManager.Instance.SceneController.CurrentScene == "IslandScene")
-                        {
-                            // TODO: look for individual zone tickets when not in debug mode
-                            IslandCore.UnlockIslandZones("MineA");
-                        }*/
                     }
                     else
                     {
@@ -273,6 +289,33 @@ public class LobbyCore : MonoBehaviour
                     GetVirtualCurrencyPlayfab,
                     () => ProcessError(errorCallback.ErrorMessage));
             });
+    }
+
+    public IEnumerator ResetCharacterStamina()
+    {
+        ResetCharacterStaminaPlayFab();
+        yield return null;
+    }
+
+    private void ResetCharacterStaminaPlayFab()
+    {
+        DisplayLoadingPanel();
+        PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
+        {
+            FunctionName = "IncreaseAllCharacterStamina",
+            GeneratePlayStreamEvent = true
+        },
+        resultCallback =>
+        {
+            failedCallbackCounter = 0;
+            HideLoadingPanel();
+        },
+        errorCallback =>
+        {
+            ErrorCallback(errorCallback.Error,
+                    ResetCharacterStaminaPlayFab,
+                    () => ProcessError(errorCallback.ErrorMessage));
+        }); ;
     }
 
     public void NextGame()

@@ -16,11 +16,9 @@ MonoBehaviour:
   animalID: CHICKEN
   characterPanelSprite: {fileID: 21300000, guid: eba3f8842f2a213438000715542def9a, type: 3}
   displaySprite: {fileID: 21300000, guid: 086bfd6556afe2c498a4bbe582b12867, type: 3}
-  undeployedSprite: {fileID: 0}
-  deployedSprite: {fileID: 0}
-  characterContainerPrefab: {fileID: 0}
-  idlePrefab: {fileID: 0}
-  miningPrefab: {fileID: 0}
+  undeployedSprite: {fileID: 21300000, guid: 620e7dbfb9aab02488ed3b5d45d7b061, type: 3}
+  deployedSprite: {fileID: 21300000, guid: 19e9a98c2bb22734d8f647e62fa7994f, type: 3}
+  AnimatedCharacterPrefab: {fileID: 4412695600301330138, guid: 192579b35eb584646927524e8f8f768c, type: 3}
   strength: 4
   speed: 8
   stamina: 8

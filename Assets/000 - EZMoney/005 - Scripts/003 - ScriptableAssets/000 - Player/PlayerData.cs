@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using MyBox;
+using System;
 
 [CreateAssetMenu(fileName = "PlayerData", menuName = "EZMoneyPH/Data/PlayerData")]
 public class PlayerData : ScriptableObject
@@ -30,9 +31,14 @@ public class PlayerData : ScriptableObject
 
     [field: Header("AUTOPILOT INVENTORY")]
     [field: SerializeField] public bool OwnsAutoMining { get; set; }
+    [field: SerializeField] public float AutoMiningTimeLeft { get; set; }
     [field: SerializeField] public bool OwnsAutoFarming { get; set; }
+    [field: SerializeField] public float AutoFarmingTimeLeft { get; set; }
     [field: SerializeField] public bool OwnsAutoFishing { get; set; }
+    [field: SerializeField] public float AutoFishingTimeLeft { get; set; }
     [field: SerializeField] public bool OwnsAutoWoodCutting { get; set; }
+    [field: SerializeField] public float AutoWoodcuttingTimeLeft { get; set; }
+
 
     [field: Header("ZONES INVENTORY")]
     [field: SerializeField] public bool CanAccessMineA { get; set; }
@@ -44,7 +50,21 @@ public class PlayerData : ScriptableObject
     [field: SerializeField] public bool CanAccessForestA { get; set; }
     [field: SerializeField] public bool CanAccessForestB { get; set; }
 
-
+    [field: Header("ORES")]
+    [field: SerializeField] public string IronInstanceID { get; set; }
+    [field: SerializeField] public int IronCount { get; set; }
+    [field: SerializeField] public string TinInstanceID { get; set; }
+    [field: SerializeField] public int TinCount { get; set; }
+    [field: SerializeField] public string CopperInstanceID { get; set; }
+    [field: SerializeField] public int CopperCount { get; set; }
+    [field: SerializeField] public string SilverInstanceID { get; set; }
+    [field: SerializeField] public int SilverCount { get; set; }
+    [field: SerializeField] public string GoldInstanceID { get; set; }
+    [field: SerializeField] public int GoldCount { get; set; }
+    [field: SerializeField] public string PlatinumInstanceID { get; set; }
+    [field: SerializeField] public int PlatinumCount { get; set; }
+    [field: SerializeField] public string DiamondInstanceID { get; set; }
+    [field: SerializeField] public int DiamondCount { get; set; }
 
     [field: Header("QUEST")]
     [field: SerializeField] public int DailyLogin { get; set; }
@@ -53,9 +73,16 @@ public class PlayerData : ScriptableObject
     [field: SerializeField] public int MinsPlayed { get; set; }
     [field: SerializeField] public int CoinsGained { get; set; }
     [field: SerializeField] public int DailyClaimed { get; set; }
+    [field: SerializeField] public TimeSpan ElapsedGameplayTime { get; set; }
 
     private void OnEnable()
     {
+        if (PlayerPrefs.HasKey("ElapsedMinutes") && PlayerPrefs.HasKey("ElapsedSeconds"))
+        {
+            ElapsedGameplayTime = new TimeSpan(0, PlayerPrefs.GetInt("ElapsedMinutes"), PlayerPrefs.GetInt("ElapsedSeconds"));
+        }
+        else
+            ElapsedGameplayTime = new TimeSpan(0,0,0);
         ResetPlayerData();
     }
 
@@ -76,13 +103,7 @@ public class PlayerData : ScriptableObject
             EZGem = 0;
             DisplayPicture = "";
             foreach(CharacterInstanceData character in OwnedCharacters)
-            {
-                character.CharacterInstanceID = "";
-                character.BaseCharacterData = null;
-                character.CharacterCurrentRole = CharacterInstanceData.Roles.NONE;
-                character.CharacterCurrentState = CharacterInstanceData.States.NONE;
-                character.CharacterCurrentStamina = 0;
-            }
+                character.ResetCharacterInstance();
             LifetimeEZCoin = 0;
             LifetimeEZGem = 0;
             MiningEZCoin = 0;
@@ -93,6 +114,10 @@ public class PlayerData : ScriptableObject
             OwnsAutoFishing = false;
             OwnsAutoMining = false;
             OwnsAutoWoodCutting = false;
+            AutoMiningTimeLeft = 0;
+            AutoFarmingTimeLeft = 0;
+            AutoFishingTimeLeft = 0;
+            AutoWoodcuttingTimeLeft = 0;
             CanAccessFarmA = false;
             CanAccessFarmB = false;
             CanAccessForestA = false;
@@ -101,6 +126,21 @@ public class PlayerData : ScriptableObject
             CanAccessMineB = false;
             CanAccessPondA = false;
             CanAccessPondB = false;
+            IronCount = 0;
+            IronInstanceID = "";
+            CopperCount = 0;
+            CopperInstanceID = "";
+            TinCount = 0;
+            TinInstanceID = "";
+            SilverCount = 0;
+            SilverInstanceID = "";
+            GoldCount = 0;
+            GoldInstanceID = "";
+            PlatinumCount = 0;
+            PlatinumInstanceID = "";
+            DiamondCount = 0;
+            DiamondInstanceID = "";
+
             DailyLogin = 0;
             SocMedShared = 0;
             AdsWatched = 0;
@@ -108,5 +148,47 @@ public class PlayerData : ScriptableObject
             CoinsGained = 0;
             DailyClaimed = 0;
         }
+    }
+
+    public string SerializeCurrentQuestData()
+    {
+        return GameManager.Instance.SerializeIntValue(
+                                new List<string>
+                                {
+                                    "DailyCheckIn",
+                                    "SocMedShared",
+                                    "AdsWatched",
+                                    "MinsPlayed",
+                                    "EZCoinsGained",
+                                    "DailyQuestClaimed"
+                                },
+                                new List<int>
+                                {
+                                    DailyLogin,
+                                    SocMedShared,
+                                    AdsWatched,
+                                    MinsPlayed,
+                                    CoinsGained,
+                                    DailyClaimed
+                                });
+    }
+
+    public string SerializeCurrentAutoTimerData()
+    {
+        return GameManager.Instance.SerializeIntValue(
+                                new List<string>
+                                {
+                                    "Mining",
+                                    "Farming",
+                                    "Fishing",
+                                    "Woodcutting"
+                                },
+                                new List<int>
+                                {
+                                    Mathf.CeilToInt(AutoMiningTimeLeft),
+                                    Mathf.CeilToInt(AutoFarmingTimeLeft),
+                                    Mathf.CeilToInt(AutoFishingTimeLeft),
+                                    Mathf.CeilToInt(AutoWoodcuttingTimeLeft),
+                                });
     }
 }

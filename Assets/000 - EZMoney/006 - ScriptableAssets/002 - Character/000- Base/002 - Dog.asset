@@ -16,11 +16,9 @@ MonoBehaviour:
   animalID: DOG
   characterPanelSprite: {fileID: 21300000, guid: e6e3ec232a1796e4eb9de119a3e9b53e, type: 3}
   displaySprite: {fileID: 21300000, guid: 91134ced58f6d934390ec063e47a51f1, type: 3}
-  undeployedSprite: {fileID: 0}
-  deployedSprite: {fileID: 0}
-  characterContainerPrefab: {fileID: 0}
-  idlePrefab: {fileID: 0}
-  miningPrefab: {fileID: 0}
+  undeployedSprite: {fileID: 21300000, guid: 67a0c1ba31ce35342a7c93da47a07551, type: 3}
+  deployedSprite: {fileID: 21300000, guid: c958d02bba80250499f810a2d1fe8419, type: 3}
+  AnimatedCharacterPrefab: {fileID: 3453243017242474892, guid: 87b543d9864d3c84eb57981f22dcae05, type: 3}
   strength: 7
   speed: 5
   stamina: 8

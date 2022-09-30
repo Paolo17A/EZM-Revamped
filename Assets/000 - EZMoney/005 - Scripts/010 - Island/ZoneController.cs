@@ -8,6 +8,7 @@ public class ZoneController : MonoBehaviour
     //=======================================================================
     [SerializeField] private IslandCore IslandCore;
     [SerializeField] private PlayerData PlayerData;
+    [SerializeField] public ButtonScaler ButtonScaler;
 
     [field: Header("ZONE DATA")]
     [SerializeField] public bool ZoneUnlocked { get; set; }
@@ -26,11 +27,20 @@ public class ZoneController : MonoBehaviour
         ZoneSprite.color = new Color(255, 255, 255, 255);
     }
 
-    public void ProcessZoneInteraction()
+    public void SetAsClickedZone()
     {
         IslandCore.ClickedZone = this;
+    }
+
+    public void ProcessZoneInteraction()
+    {
+        //IslandCore.ClickedZone = this;
         if (ZoneUnlocked)
+        {
             Debug.Log("You will go to " + ZoneName);
+            if (ZoneName == "MineA")
+                GameManager.Instance.SceneController.CurrentScene = "MineAScene";
+        }
         else if (PlayerData.EZCoin < ZonePrice)
             GameManager.Instance.DisplayErrorPanel("You do not have enough EZCoins to purchase access to this zone");
         else

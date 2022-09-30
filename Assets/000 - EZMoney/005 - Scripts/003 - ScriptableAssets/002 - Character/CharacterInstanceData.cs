@@ -43,4 +43,15 @@ public class CharacterInstanceData : ScriptableObject
     [field: SerializeField] public Roles CharacterCurrentRole { get; set; }
     [field: SerializeField] public States CharacterCurrentState { get; set; }
     [field: SerializeField] public int CharacterCurrentStamina { get; set; }
+    [field: SerializeField] public bool OnAutoPilot { get; set; }
+
+    public void ResetCharacterInstance()
+    {
+        CharacterInstanceID = "";
+        BaseCharacterData = null;
+        CharacterCurrentRole = Roles.NONE;
+        CharacterCurrentState = States.NONE;
+        CharacterCurrentStamina = 0;
+        OnAutoPilot = false;
+    }
 }

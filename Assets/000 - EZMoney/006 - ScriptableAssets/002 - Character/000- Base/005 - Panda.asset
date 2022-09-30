@@ -16,11 +16,9 @@ MonoBehaviour:
   animalID: PANDA
   characterPanelSprite: {fileID: 21300000, guid: e6d0c226ee4dd85439ec8ebd96efe26c, type: 3}
   displaySprite: {fileID: 21300000, guid: 76a9df6a60cff75429bc0f66e2ec4bb5, type: 3}
-  undeployedSprite: {fileID: 0}
-  deployedSprite: {fileID: 0}
-  characterContainerPrefab: {fileID: 0}
-  idlePrefab: {fileID: 0}
-  miningPrefab: {fileID: 0}
+  undeployedSprite: {fileID: 21300000, guid: 658d792955a37dd43b8d20fc4aba2b8d, type: 3}
+  deployedSprite: {fileID: 21300000, guid: d305a5e6756891b458df06d11c369572, type: 3}
+  AnimatedCharacterPrefab: {fileID: 8788257562085078963, guid: 3da7057181beb1d4abef05d8736f3f01, type: 3}
   strength: 10
   speed: 4
   stamina: 6

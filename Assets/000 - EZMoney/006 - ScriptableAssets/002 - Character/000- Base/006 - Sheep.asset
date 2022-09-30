@@ -16,11 +16,9 @@ MonoBehaviour:
   animalID: SHEEP
   characterPanelSprite: {fileID: 21300000, guid: b0b53886e8ed6984892aab91bd00ffc7, type: 3}
   displaySprite: {fileID: 21300000, guid: 848e931bf60422542948bc707821a344, type: 3}
-  undeployedSprite: {fileID: 0}
-  deployedSprite: {fileID: 0}
-  characterContainerPrefab: {fileID: 0}
-  idlePrefab: {fileID: 0}
-  miningPrefab: {fileID: 0}
+  undeployedSprite: {fileID: 21300000, guid: bbb931d3cfb32f54fb8b32e5ef845148, type: 3}
+  deployedSprite: {fileID: 21300000, guid: 61290c652f04d904d8308ba03f1e9bb9, type: 3}
+  AnimatedCharacterPrefab: {fileID: 8788257562085078963, guid: 3da7057181beb1d4abef05d8736f3f01, type: 3}
   strength: 9
   speed: 5
   stamina: 6

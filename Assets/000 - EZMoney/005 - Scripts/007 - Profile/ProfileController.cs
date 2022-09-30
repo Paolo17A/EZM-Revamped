@@ -8,12 +8,11 @@ public class ProfileController : MonoBehaviour
 {
     private void OnEnable()
     {
-        GameManager.Instance.SceneController.AddActionLoadinList(ProfileCore.InitializeProfileScene());
+        if(GameManager.Instance.DebugMode)
+            GameManager.Instance.SceneController.AddActionLoadinList(ProfileCore.InitializeProfileScene());
         if(!GameManager.Instance.DebugMode)
         {
-            GameManager.Instance.SceneController.AddActionLoadinList(ProfileCore.GetUserInventory());
-            GameManager.Instance.SceneController.AddActionLoadinList(ProfileCore.GetPlayerStatistics());
-            //GameManager.Instance.SceneController.AddActionLoadinList(ProfileCore.ListAllCharacters());
+            GameManager.Instance.SceneController.AddActionLoadinList(ProfileCore.GetUserData());
         }
         ProfileCore.onProfileSelectStateChange += ProfileStateChange;
         GameManager.Instance.SceneController.ActionPass = true;
@@ -53,6 +52,8 @@ public class ProfileController : MonoBehaviour
             ProfileCore.ShowAutoPanel();
         else if (ProfileCore.CurrentProfileState == ProfileCore.ProfileStates.SWAP)
             ProfileCore.ShowSwapPanel();
+        else if (ProfileCore.CurrentProfileState == ProfileCore.ProfileStates.AUTODATA)
+            ProfileCore.ShowAutoDataPanel();
     }
 
     public void ProfileStateToIndex(int state)
@@ -73,6 +74,9 @@ public class ProfileController : MonoBehaviour
                 break;
             case (int)ProfileCore.ProfileStates.SWAP:
                 ProfileCore.CurrentProfileState = ProfileCore.ProfileStates.SWAP;
+                break;
+            case (int)ProfileCore.ProfileStates.AUTODATA:
+                ProfileCore.CurrentProfileState = ProfileCore.ProfileStates.AUTODATA;
                 break;
         }
     }

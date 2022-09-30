@@ -18,7 +18,7 @@ MonoBehaviour:
   <SubscriptionLevel>k__BackingField: 
   <EZCoin>k__BackingField: 0
   <EZGem>k__BackingField: 0
-  <DisplayPicture>k__BackingField: 
+  <DisplayPicture>k__BackingField: DOG
   <OwnedCharacters>k__BackingField:
   - {fileID: 11400000, guid: 22f7c50484ea019418f5787ea3f0ba00, type: 2}
   - {fileID: 11400000, guid: b9ee88d47d9339343b9cb5cb9fc72972, type: 2}
@@ -50,16 +50,20 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 97f04f4b7aa89cf42b1f2515677b9422, type: 2}
   - {fileID: 11400000, guid: 085521521af7afc4997a7e45af5fe562, type: 2}
   - {fileID: 11400000, guid: ece5cb564c537b14183b28af165e6b36, type: 2}
-  <LifetimeEZCoin>k__BackingField: 0
+  <LifetimeEZCoin>k__BackingField: 20
   <LifetimeEZGem>k__BackingField: 0
-  <MiningEZCoin>k__BackingField: 0
+  <MiningEZCoin>k__BackingField: 2
   <FishingEZCoin>k__BackingField: 0
   <FarmingEZCoin>k__BackingField: 0
   <WoodcuttingEZCoin>k__BackingField: 0
-  <OwnsAutoMining>k__BackingField: 0
-  <OwnsAutoFarming>k__BackingField: 0
-  <OwnsAutoFishing>k__BackingField: 0
-  <OwnsAutoWoodCutting>k__BackingField: 0
+  <OwnsAutoMining>k__BackingField: 1
+  <AutoMiningTimeLeft>k__BackingField: 598.27673
+  <OwnsAutoFarming>k__BackingField: 1
+  <AutoFarmingTimeLeft>k__BackingField: 1800
+  <OwnsAutoFishing>k__BackingField: 1
+  <AutoFishingTimeLeft>k__BackingField: 1800
+  <OwnsAutoWoodCutting>k__BackingField: 1
+  <AutoWoodcuttingTimeLeft>k__BackingField: 1800
   <CanAccessMineA>k__BackingField: 0
   <CanAccessMineB>k__BackingField: 0
   <CanAccessFarmA>k__BackingField: 0
@@ -68,9 +72,23 @@ MonoBehaviour:
   <CanAccessPondB>k__BackingField: 0
   <CanAccessForestA>k__BackingField: 0
   <CanAccessForestB>k__BackingField: 0
+  <IronInstanceID>k__BackingField: 
+  <IronCount>k__BackingField: 0
+  <TinInstanceID>k__BackingField: 
+  <TinCount>k__BackingField: 0
+  <CopperInstanceID>k__BackingField: 
+  <CopperCount>k__BackingField: 0
+  <SilverInstanceID>k__BackingField: 
+  <SilverCount>k__BackingField: 0
+  <GoldInstanceID>k__BackingField: 
+  <GoldCount>k__BackingField: 0
+  <PlatinumInstanceID>k__BackingField: 
+  <PlatinumCount>k__BackingField: 0
+  <DiamondInstanceID>k__BackingField: 
+  <DiamondCount>k__BackingField: 0
   <DailyLogin>k__BackingField: 0
   <SocMedShared>k__BackingField: 0
   <AdsWatched>k__BackingField: 0
   <MinsPlayed>k__BackingField: 0
-  <CoinsGained>k__BackingField: 0
+  <CoinsGained>k__BackingField: 2
   <DailyClaimed>k__BackingField: 0

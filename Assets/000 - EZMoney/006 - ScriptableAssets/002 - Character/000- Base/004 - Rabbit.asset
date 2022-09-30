@@ -16,11 +16,9 @@ MonoBehaviour:
   animalID: RABBIT
   characterPanelSprite: {fileID: 21300000, guid: 2d9b00ded4a1c0140a9c69d5e4065eee, type: 3}
   displaySprite: {fileID: 21300000, guid: ddb8e7a8e2983624dba97a0745fa3f6d, type: 3}
-  undeployedSprite: {fileID: 0}
-  deployedSprite: {fileID: 0}
-  characterContainerPrefab: {fileID: 0}
-  idlePrefab: {fileID: 0}
-  miningPrefab: {fileID: 0}
+  undeployedSprite: {fileID: 21300000, guid: 85b0fbc3aacc25f448d9a310ba4afac6, type: 3}
+  deployedSprite: {fileID: 21300000, guid: 95d8745de162a0a4f8d2dbe9b42e8c14, type: 3}
+  AnimatedCharacterPrefab: {fileID: 8891556774741300055, guid: 4fbccef48ab039d44b9ccb76a7643906, type: 3}
   strength: 3
   speed: 10
   stamina: 6

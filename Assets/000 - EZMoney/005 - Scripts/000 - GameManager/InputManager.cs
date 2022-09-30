@@ -1,10 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
     [field: SerializeField] public GameController GameController { get; set; }
+    public bool isPrimaryTouch;
     private void Awake()
     {
         GameController = new GameController();
@@ -13,11 +16,20 @@ public class InputManager : MonoBehaviour
     private void OnEnable()
     {
         GameController.Enable();
+        GameController.Menu.Interact.started += _ => InteractStarted(true);
+        GameController.Menu.Interact.canceled += _ => InteractStarted(false);
     }
 
     private void OnDisable()
     {
         GameController.Disable();
+        GameController.Menu.Interact.started -= _ => InteractStarted(true);
+        GameController.Menu.Interact.canceled -= _ => InteractStarted(false);
+    }
+
+    private void InteractStarted(bool value)
+    {
+        isPrimaryTouch = value;
     }
 
     public Vector2 GetMousePosition()

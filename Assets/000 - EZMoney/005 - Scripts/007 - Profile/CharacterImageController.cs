@@ -60,8 +60,15 @@ public class CharacterImageController : MonoBehaviour
                     case "FISHER":
                         characterInstanceData.CharacterCurrentRole = CharacterInstanceData.Roles.FISHER;
                         break;
+                    case "WOODCUTTER":
+                        characterInstanceData.CharacterCurrentRole = CharacterInstanceData.Roles.WOODCUTTER;
+                        break;
                 }
                 characterInstanceData.CharacterCurrentState = CharacterInstanceData.States.INVENTORY;
+                if (resultCallback.Data["OnAutopilot"].Value == "1")
+                    characterInstanceData.OnAutoPilot = true;
+                else
+                    characterInstanceData.OnAutoPilot = false;
                 SetCharacterImageData();
                 StaminaTMP.text = characterInstanceData.CharacterCurrentStamina .ToString() + "/" + CharacterData.stamina;
                 ImageCG.alpha = 1;

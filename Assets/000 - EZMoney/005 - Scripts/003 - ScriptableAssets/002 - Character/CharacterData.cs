@@ -35,9 +35,7 @@ public class CharacterData : ScriptableObject
     public Sprite deployedSprite;
 
     [Header("ANIMATED PREFABS")]
-    public GameObject characterContainerPrefab;
-    public GameObject idlePrefab;
-    public GameObject miningPrefab;
+    public GameObject AnimatedCharacterPrefab;
 
     [Header("BASE STATS")]
     public int strength;

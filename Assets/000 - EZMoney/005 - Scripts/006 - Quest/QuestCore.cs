@@ -56,7 +56,8 @@ public class QuestCore : MonoBehaviour
             if (PlayerData.AdsWatched > 0)
                 QuestProgressSlider.value += 0.2f;
 
-            MinsPlayedTMP.text = PlayerData.MinsPlayed + "/30";
+            MinsPlayedTMP.text = (int)PlayerData.ElapsedGameplayTime.TotalMinutes + "/30";
+            PlayerData.MinsPlayed = (int)PlayerData.ElapsedGameplayTime.TotalMinutes;
             if (PlayerData.MinsPlayed >= 30)
                 QuestProgressSlider.value += 0.2f;
 
@@ -97,7 +98,8 @@ public class QuestCore : MonoBehaviour
                             if (PlayerData.AdsWatched > 0)
                                 QuestProgressSlider.value += 0.2f;
 
-                            MinsPlayedTMP.text = PlayerData.MinsPlayed + "/30";
+                            MinsPlayedTMP.text = (int)PlayerData.ElapsedGameplayTime.TotalMinutes + "/30";
+                            PlayerData.MinsPlayed = (int)PlayerData.ElapsedGameplayTime.TotalMinutes;
                             if (PlayerData.MinsPlayed >= 30)
                                 QuestProgressSlider.value += 0.2f;
 
@@ -144,7 +146,7 @@ public class QuestCore : MonoBehaviour
                         {
                             PlayerData.DailyLogin++;
                             updateUserData.Data.Clear();
-                            updateUserData.Data.Add("Quests", SerializeCurrentQuestData());
+                            updateUserData.Data.Add("Quests", PlayerData.SerializeCurrentQuestData());
 
                             PlayFabClientAPI.UpdateUserData(updateUserData,
                                 resultCallback =>
@@ -215,7 +217,7 @@ public class QuestCore : MonoBehaviour
                     if (resultCallback.Data.ContainsKey("LUID") && resultCallback.Data["LUID"].Value == PlayerData.LUID)
                     {
                         updateUserData.Data.Clear();
-                        updateUserData.Data.Add("Quests", SerializeCurrentQuestData());
+                        updateUserData.Data.Add("Quests", PlayerData.SerializeCurrentQuestData());
                         PlayFabClientAPI.UpdateUserData(updateUserData,
                             resultCallback =>
                             {
@@ -270,7 +272,7 @@ public class QuestCore : MonoBehaviour
                             if (resultCallback.Data.ContainsKey("LUID") && resultCallback.Data["LUID"].Value == PlayerData.LUID)
                             {
                                 updateUserData.Data.Clear();
-                                updateUserData.Data.Add("Quests", SerializeCurrentQuestData());
+                                updateUserData.Data.Add("Quests", PlayerData.SerializeCurrentQuestData());
                                 PlayFabClientAPI.UpdateUserData(updateUserData,
                                     resultCallback =>
                                     {
@@ -362,29 +364,6 @@ public class QuestCore : MonoBehaviour
     {
         LobbyCore.HideLoadingPanel();
         GameManager.Instance.DisplaySpecialErrorPanel("Server Error. Please restart the game");
-    }
-
-    private string SerializeCurrentQuestData()
-    {
-        return GameManager.Instance.SerializeIntValue(
-                                new List<string>
-                                {
-                                    "DailyCheckIn",
-                                    "SocMedShared",
-                                    "AdsWatched",
-                                    "MinsPlayed",
-                                    "EZCoinsGained",
-                                    "DailyQuestClaimed"
-                                },
-                                new List<int>
-                                {
-                                    PlayerData.DailyLogin,
-                                    PlayerData.SocMedShared,
-                                    PlayerData.AdsWatched,
-                                    PlayerData.MinsPlayed,
-                                    PlayerData.CoinsGained,
-                                    PlayerData.DailyClaimed
-                                });
     }
     #endregion
 }
