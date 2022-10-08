@@ -133,7 +133,7 @@ public class LobbyCore : MonoBehaviour
                 case "TOPAZ":
                     SubscriptionGemImage.sprite = SubscriptionGemSprites[1];
                     break;
-                case "SAPHIRE":
+                case "SAPPHIRE":
                     SubscriptionGemImage.sprite = SubscriptionGemSprites[2];
                     break;
                 case "EMERALD":
@@ -185,7 +185,7 @@ public class LobbyCore : MonoBehaviour
                                 case "TOPAZ":
                                     SubscriptionGemImage.sprite = SubscriptionGemSprites[1];
                                     break;
-                                case "SAPHIRE":
+                                case "SAPPHIRE":
                                     SubscriptionGemImage.sprite = SubscriptionGemSprites[2];
                                     break;
                                 case "EMERALD":
@@ -226,6 +226,21 @@ public class LobbyCore : MonoBehaviour
                             PlayerData.AutoFarmingTimeLeft = GameManager.Instance.DeserializeIntValue(resultCallback.Data["AutoPilot"].Value, "Farming");
                             PlayerData.AutoFishingTimeLeft = GameManager.Instance.DeserializeIntValue(resultCallback.Data["AutoPilot"].Value, "Fishing");
                             PlayerData.AutoWoodcuttingTimeLeft = GameManager.Instance.DeserializeIntValue(resultCallback.Data["AutoPilot"].Value, "Woodcutting");
+                        }
+
+                        if(resultCallback.Data.ContainsKey("Quests"))
+                        {
+                            PlayerData.DailyLogin = GameManager.Instance.DeserializeIntValue(resultCallback.Data["Quests"].Value, "DailyCheckIn");
+                            PlayerData.SocMedShared = GameManager.Instance.DeserializeIntValue(resultCallback.Data["Quests"].Value, "SocMedShared");
+                            PlayerData.AdsWatched = GameManager.Instance.DeserializeIntValue(resultCallback.Data["Quests"].Value, "AdsWatched");
+                            PlayerData.MinsPlayed = GameManager.Instance.DeserializeIntValue(resultCallback.Data["Quests"].Value, "MinsPlayed");
+                            PlayerData.CoinsGained = GameManager.Instance.DeserializeIntValue(resultCallback.Data["Quests"].Value, "EZCoinsGained");
+                            PlayerData.DailyClaimed = GameManager.Instance.DeserializeIntValue(resultCallback.Data["Quests"].Value, "DailyQuestClaimed");
+
+                            if(PlayerPrefs.HasKey("ElapsedSeconds"))
+                                PlayerData.ElapsedGameplayTime = new TimeSpan(0, PlayerData.MinsPlayed, PlayerPrefs.GetInt("ElapsedSeconds"));
+                            else
+                                PlayerData.ElapsedGameplayTime = new TimeSpan(0, PlayerData.MinsPlayed, 0);
                         }
 
                         if (GameManager.Instance.SceneController.CurrentScene == "LobbyScene")
@@ -278,6 +293,11 @@ public class LobbyCore : MonoBehaviour
                             PlayerData.CanAccessMineB = true;
                             IslandCore.MineB.UnlockZone();
                         }
+                        if(item.ItemId == "FarmB")
+                        {
+                            PlayerData.CanAccessFarmB = true;
+                            IslandCore.FarmB.UnlockZone();
+                        }    
                     }
 
                 }

@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: CharacterInstanceData 5
   m_EditorClassIdentifier: 
   <CharacterInstanceID>k__BackingField: 
-  <BaseCharacterData>k__BackingField: {fileID: 0}
-  <CharacterCurrentRole>k__BackingField: 0
-  <CharacterCurrentState>k__BackingField: 0
+  <BaseCharacterData>k__BackingField: {fileID: 11400000, guid: 780544cf5353c384ba3199bc6b3ac647, type: 2}
+  <CharacterCurrentRole>k__BackingField: 1
+  <CharacterCurrentState>k__BackingField: 2
+  <CharacterCurrentStamina>k__BackingField: 4
+  <OnAutoPilot>k__BackingField: 1

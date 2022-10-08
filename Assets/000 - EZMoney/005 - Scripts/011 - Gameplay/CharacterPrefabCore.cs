@@ -80,6 +80,7 @@ public class CharacterPrefabCore : MonoBehaviour
     private void ReduceCharacterStamina()
     {
         ThisCharacterSlot.ThisCharacterInstance.CharacterCurrentStamina--;
+        ThisCharacterSlot.StaminaSlider.value = (int)ThisCharacterSlot.ThisCharacterInstance.CharacterCurrentStamina / ThisCharacterSlot.ThisCharacterInstance.BaseCharacterData.stamina;
         CurrentCharacterState = CharacterStates.IDLE;
 
         if (!ThisCharacterSlot.ForAutoPilot)

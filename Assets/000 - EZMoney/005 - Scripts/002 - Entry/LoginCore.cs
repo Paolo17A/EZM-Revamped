@@ -130,6 +130,8 @@ public class LoginCore : MonoBehaviour
             {
                 failedCallbackCounter = 0;
                 PlayerData.LUID = myGUID.ToString();
+                PlayerPrefs.SetString("Username", EntryCore.UsernameLoginTMP.text);
+                PlayerPrefs.SetString("Password", EntryCore.PasswordLoginTMP.text);
                 GameManager.Instance.SceneController.CurrentScene = "LobbyScene";
             },
             errorCallback =>

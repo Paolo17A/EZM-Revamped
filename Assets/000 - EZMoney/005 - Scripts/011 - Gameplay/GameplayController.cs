@@ -6,12 +6,14 @@ using UnityEngine.AI;
 using UnityEngine.EventSystems;
 using MyBox;
 using PlayFab.ClientModels;
+using Cinemachine;
 
 public class GameplayController : MonoBehaviour
 {
     //=========================================================================================
     [SerializeField] private GameplayCore GameplayCore;
     [SerializeField] private PlayerData PlayerData;
+    [SerializeField] private CinemachineMovementController VirtualCamera;
     private float secondsTimer;
 
     [Header("TIME")]
@@ -22,8 +24,10 @@ public class GameplayController : MonoBehaviour
 
     [Header("DEBUGGER")]
     [SerializeField][ReadOnly] private CharacterPrefabCore SelectedCharacterPrefab;
+    [SerializeField][ReadOnly] private ExtendedZoneController SelectedZoneExtension;
     [SerializeField][ReadOnly] private RaycastHit hit;
     [SerializeField][ReadOnly] private Vector3 clickedPos;
+    [SerializeField][ReadOnly] private bool newlyReleased;
     Ray myRay;
     //=========================================================================================
     private void OnEnable()
@@ -57,6 +61,10 @@ public class GameplayController : MonoBehaviour
         GameplayCore.statisticUpdate1 = new StatisticUpdate();
         GameplayCore.updateUserData = new UpdateUserDataRequest();
         GameplayCore.updateUserData.Data = new Dictionary<string, string>();
+        GameplayCore.startPurchase = new StartPurchaseRequest();
+        GameplayCore.startPurchase.Items = new List<ItemPurchaseRequest>();
+        GameplayCore.payForPurchase = new PayForPurchaseRequest();
+        GameplayCore.confirmPurchase = new ConfirmPurchaseRequest();
 
         GameplayCore.ActualOwnedCharacters = new List<CharacterInstanceData>();
         GameplayCore.FilteredCharacters = new List<CharacterInstanceData>();
@@ -73,7 +81,8 @@ public class GameplayController : MonoBehaviour
 
     private void Update()
     {
-        if(GameplayCore.AutomationActivated)
+        #region TIME
+        if (GameplayCore.AutomationActivated)
         {
             if (GameplayCore.NeededRole == CharacterInstanceData.Roles.MINER)
             {
@@ -94,13 +103,16 @@ public class GameplayController : MonoBehaviour
 
         secondsTimer += Time.deltaTime;
         PlayerData.ElapsedGameplayTime = TimeSpan.FromSeconds(secondsTimer);
+        PlayerData.MinsPlayed = (int)PlayerData.ElapsedGameplayTime.TotalMinutes;
         ElapsedMinute = (int)PlayerData.ElapsedGameplayTime.TotalMinutes % 60;
         ElapsedSeconds = (int)PlayerData.ElapsedGameplayTime.TotalSeconds % 60;
         PlayerPrefs.SetInt("ElapsedMinutes", ElapsedMinute);
         PlayerPrefs.SetInt("ElapsedSeconds", ElapsedSeconds);
+        #endregion
 
         if (GameManager.Instance.InputManager.isPrimaryTouch && !EventSystem.current.IsPointerOverGameObject())
         {
+            newlyReleased = false;
             if (Physics.Raycast(GameManager.Instance.MainCamera.ScreenPointToRay(GameManager.Instance.InputManager.GetMousePosition()), out hit))
             {
                 if(hit.collider)
@@ -131,9 +143,36 @@ public class GameplayController : MonoBehaviour
                                 hit.transform.GetComponent<OreController>().OccupyingCharacter = SelectedCharacterPrefab;
                             }
                             SelectedCharacterPrefab = null;
-                            
                         }
                     }
+                }
+            }
+        }
+        // User released click on extension object
+        else if (!GameManager.Instance.InputManager.isPrimaryTouch && !newlyReleased)
+        {
+            newlyReleased = true;
+            if (Physics.Raycast(GameManager.Instance.MainCamera.ScreenPointToRay(GameManager.Instance.InputManager.GetMousePosition()), out hit))
+            {
+                if(hit.collider && hit.transform.gameObject.layer == 8)
+                {
+                    if(hit.transform.tag == "Return")
+                    {
+                        VirtualCamera.destinationVector = VirtualCamera.defaultCenterPos;
+                        VirtualCamera.minXClamp = VirtualCamera.defaultMinXClamp;
+                        VirtualCamera.maxXClamp = VirtualCamera.defaultMaxXClamp;
+                        VirtualCamera.minZClamp = VirtualCamera.defaultMinZClamp;
+                        VirtualCamera.maxZClamp = VirtualCamera.defaultMaxZClamp;
+                        GameplayCore.CurrentZone = GameplayCore.Zones.DEFAULT;
+                        VirtualCamera.travelling = true;
+
+                    }
+                    else if (hit.transform.tag == "Extension")
+                    {
+                        SelectedZoneExtension = hit.transform.GetComponent<ExtendedZoneController>();
+                        SelectedZoneExtension.ProcessExtensionClick();
+                    }
+                    
                 }
             }
         }

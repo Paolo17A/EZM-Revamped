@@ -9,6 +9,7 @@ using System.Linq;
 using PlayFab;
 using PlayFab.ClientModels;
 using static CharacterInstanceData;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class GameplayCore : MonoBehaviour
 {
@@ -49,9 +50,11 @@ public class GameplayCore : MonoBehaviour
 
     #region VARIABLES
     //====================================================================
+    public enum Zones { DEFAULT, NORTH, SOUTH, EAST, WEST}
     [SerializeField] private PlayerData PlayerData;
     [SerializeField] private string Autopilot;
     [SerializeField] public Roles NeededRole;
+    [SerializeField] public Zones CurrentZone = Zones.DEFAULT;
 
     [Header("LOADING")]
     [SerializeField] private GameObject LoadingPanel;
@@ -110,9 +113,16 @@ public class GameplayCore : MonoBehaviour
     [field: SerializeField] public TextMeshProUGUI AutoIronTMP { get; set; }
     [field: SerializeField] public TextMeshProUGUI AutoCopperTMP { get; set; }
     [field: SerializeField] public TextMeshProUGUI AutoTinTMP { get; set; }
-    [field: SerializeField][field: ReadOnly] public int AutoIron { get; set; }
-    [field: SerializeField][field: ReadOnly] public int AutoCopper { get; set; }
-    [field: SerializeField][field: ReadOnly] public int AutoTin { get; set; }
+
+    [Header("EXTENSION VARIABLES")]
+    [SerializeField] private RectTransform PurchaseRT;
+    [SerializeField] private CanvasGroup PurchaseCG;
+    [SerializeField] private TextMeshProUGUI PurchaseTMP;
+    [SerializeField] private ExtendedZoneController NorthZoneExtension;
+    [SerializeField] private ExtendedZoneController SouthZoneExtension;
+    [SerializeField] private ExtendedZoneController WestZoneExtension;
+    [SerializeField] private ExtendedZoneController EastZoneExtension;
+    [field: SerializeField][field: ReadOnly] public ExtendedZoneController ClickedExtension { get; set; }
 
 
     [Header("PLAYFAB VARIABLES")]
@@ -127,6 +137,9 @@ public class GameplayCore : MonoBehaviour
     [ReadOnly] public StatisticUpdate statisticUpdate;
     [ReadOnly] public StatisticUpdate statisticUpdate1;
     [ReadOnly] public UpdateUserDataRequest updateUserData;
+    [ReadOnly] public StartPurchaseRequest startPurchase;
+    [ReadOnly] public PayForPurchaseRequest payForPurchase;
+    [ReadOnly] public ConfirmPurchaseRequest confirmPurchase;
 
     [Header("DEBUGGER")]
     [SerializeField][ReadOnly] private bool DisplayingUndeployedCharacters;
@@ -145,6 +158,20 @@ public class GameplayCore : MonoBehaviour
         if (Autopilot == "Miningpilot" && PlayerData.OwnsAutoMining)
             AutopilotBtn.interactable = true;
         SellAutoBtn.interactable = false;
+        
+        switch(GameManager.Instance.SceneController.CurrentScene)
+        {
+            case "MineAScene":
+                if (PlayerData.CanAccessMineANorth)
+                    NorthZoneExtension.ExtensionUnlocked = true;
+                if (PlayerData.CanAccessMineASouth)
+                    SouthZoneExtension.ExtensionUnlocked = true;
+                if (PlayerData.CanAccessMineAWest)
+                    WestZoneExtension.ExtensionUnlocked = true;
+                if (PlayerData.CanAccessMineAEast)
+                    EastZoneExtension.ExtensionUnlocked = true;
+                break;
+        }
 
         if (NeededRole == Roles.MINER)
             AutomationSlider.value = PlayerData.AutoMiningTimeLeft / 1800;
@@ -177,7 +204,9 @@ public class GameplayCore : MonoBehaviour
                 break;
         }
         ProcessInventoryPanel();
+        ProcessAutoInventoryPanel();
         CalculateEZCoinValue();
+        CalculateAutoEZCoinValue();
         yield return null;
     }
 
@@ -205,9 +234,7 @@ public class GameplayCore : MonoBehaviour
                         AutomationSlider.value = PlayerData.AutoMiningTimeLeft / 1800;
                     else if (NeededRole == Roles.FARMER)
                         AutomationSlider.value = PlayerData.AutoFarmingTimeLeft / 1800;
-                    AutoIronTMP.text = AutoIron.ToString("n0");
-                    AutoTinTMP.text = AutoTin.ToString("n0");
-                    AutoCopperTMP.text = AutoCopper.ToString("n0");
+                    
                     SellAutoBtn.interactable = false;
 
                     GameManager.Instance.SceneController.AddActionLoadinList(GetUserInventory());
@@ -255,6 +282,13 @@ public class GameplayCore : MonoBehaviour
                 PlayerData.TinInstanceID = "";
                 PlayerData.IronCount = 0;
                 PlayerData.IronInstanceID = "";
+
+                PlayerData.AutoCopperCount = 0;
+                PlayerData.AutoCopperInstanceID = "";
+                PlayerData.AutoTinCount = 0;
+                PlayerData.AutoTinInstanceID = "";
+                PlayerData.AutoIronCount = 0;
+                PlayerData.AutoIronInstanceID = "";
                 foreach (ItemInstance item in resultCallback.Inventory)
                 {
                     if (item.ItemClass == "AUTO")
@@ -267,6 +301,32 @@ public class GameplayCore : MonoBehaviour
                             PlayerData.OwnsAutoFishing = true;
                         if (item.ItemId == "WoodcuttingPilot")
                             PlayerData.OwnsAutoWoodCutting = true;
+                    }
+                    else if (item.ItemClass == "EXTENSION")
+                    {
+                        if(GameManager.Instance.SceneController.CurrentScene == "MineAScene")
+                        {
+                            if(item.ItemId == "MineANorth")
+                            {
+                                PlayerData.CanAccessMineANorth = true;
+                                NorthZoneExtension.UnlockExtension();
+                            }
+                            if (item.ItemId == "MineASouth")
+                            {
+                                PlayerData.CanAccessMineASouth = true;
+                                SouthZoneExtension.UnlockExtension();
+                            }
+                            if (item.ItemId == "MineAWest")
+                            {
+                                PlayerData.CanAccessMineAWest = true;
+                                WestZoneExtension.UnlockExtension();
+                            }
+                            if (item.ItemId == "MineAEast")
+                            {
+                                PlayerData.CanAccessMineAEast = true;
+                                EastZoneExtension.UnlockExtension();
+                            }
+                        }
                     }
                     else if (item.ItemClass == "ORE")
                     {
@@ -285,14 +345,32 @@ public class GameplayCore : MonoBehaviour
                             PlayerData.IronCount = (int)item.RemainingUses;
                             PlayerData.IronInstanceID = item.ItemInstanceId;
                         }
+                        if(item.ItemId == "AutoCopperOre")
+                        {
+                            PlayerData.AutoCopperCount = (int)item.RemainingUses;
+                            PlayerData.AutoCopperInstanceID = item.ItemInstanceId;
+                        }
+                        if (item.ItemId == "AutoTinOre")
+                        {
+                            PlayerData.AutoTinCount = (int)item.RemainingUses;
+                            PlayerData.AutoTinInstanceID = item.ItemInstanceId;
+                        }
+                        if (item.ItemId == "AutoIronOre")
+                        {
+                            PlayerData.AutoIronCount = (int)item.RemainingUses;
+                            PlayerData.AutoIronInstanceID = item.ItemInstanceId;
+                        }
                     }
                 }
+                
 
                 if ((Autopilot == "Miningpilot" && PlayerData.OwnsAutoMining) || (Autopilot == "Fishingpilot" && PlayerData.OwnsAutoFishing))
                     AutopilotBtn.interactable = true;
 
                 ProcessInventoryPanel();
+                ProcessAutoInventoryPanel();
                 CalculateEZCoinValue();
+                CalculateAutoEZCoinValue();
                 HideLoadingPanel();
             },
             errorCallback =>
@@ -530,6 +608,20 @@ public class GameplayCore : MonoBehaviour
         GameManager.Instance.AnimationsLT.FadePanel(AutopilotRT, AutopilotRT, AutopilotCG, 1, 0, () => { CurrentGameplayState = GameplayStates.CORE; });
 
     }
+
+    public void ShowPurchasePanel()
+    {
+        GameManager.Instance.AnimationsLT.FadePanel(PurchaseRT, null, PurchaseCG, 0, 1, () =>
+        {
+            PurchaseTMP.text = "Would you like to purchase access to " + ClickedExtension.ExtensionName + " for " + ClickedExtension.ExtensionPrice + " EZCoins?";
+        });
+    }
+
+    public void HidePurchasePanel()
+    {
+        ClickedExtension = null;
+        GameManager.Instance.AnimationsLT.FadePanel(PurchaseRT, PurchaseRT, PurchaseCG, 1, 0, () => { });
+    }
     #endregion
 
     #region CHARACTER SELECTION
@@ -645,19 +737,16 @@ public class GameplayCore : MonoBehaviour
         AutomationActivated = false;
         if (GameManager.Instance.DebugMode)
         {
-            PlayerData.IronCount -= AutoIron;
-            PlayerData.TinCount -= AutoTin - (AutoTin % 4);
-            PlayerData.CopperCount -= AutoCopper - (AutoCopper % 4);
+            PlayerData.AutoIronCount = 0;
+            PlayerData.AutoTinCount = PlayerData.AutoTinCount % 4;
+            PlayerData.AutoCopperCount = PlayerData.AutoCopperCount % 4;
             PlayerData.EZCoin += TotalAutoEZCoinValue;
             PlayerData.CoinsGained += TotalAutoEZCoinValue;
             PlayerData.LifetimeEZCoin += TotalAutoEZCoinValue;
 
-            AutoIron = 0;
-            AutoIronTMP.text = AutoIron.ToString("n0");
-            AutoTin = (AutoTin % 4);
-            AutoTinTMP.text = AutoTin.ToString("n0");
-            AutoCopper = (AutoCopper % 4);
-            AutoCopperTMP.text = AutoCopper.ToString("n0");
+            AutoIronTMP.text = PlayerData.AutoIronCount.ToString("n0");
+            AutoTinTMP.text = PlayerData.AutoTinCount.ToString("n0");
+            AutoCopperTMP.text = PlayerData.AutoCopperCount.ToString("n0");
 
             if (NeededRole == Roles.MINER)
                 PlayerData.MiningEZCoin += TotalAutoEZCoinValue;
@@ -683,11 +772,11 @@ public class GameplayCore : MonoBehaviour
                         DisplayLoadingPanel();
                         if (NeededRole == Roles.MINER)
                         {
-                            if (PlayerData.IronCount > 0)
+                            if (PlayerData.AutoIronCount > 0)
                                 ConsumeIronOre(false);
-                            else if (PlayerData.TinCount >= 4)
+                            else if (PlayerData.AutoTinCount >= 4)
                                 ConsumeTinOre(false);
-                            else if (PlayerData.CopperCount >= 4)
+                            else if (PlayerData.AutoCopperCount >= 4)
                                 ConsumeCopperOre(false);
                             else
                                 UpdateStatistics(false);
@@ -712,24 +801,29 @@ public class GameplayCore : MonoBehaviour
     #region CONSUMPTION
     private void ConsumeIronOre(bool sellingManual)
     {
-        consumeItem.ItemInstanceId = PlayerData.IronInstanceID;
         if (sellingManual)
+        {
+            consumeItem.ItemInstanceId = PlayerData.IronInstanceID;
             consumeItem.ConsumeCount = PlayerData.IronCount;
+        }
         else
-            consumeItem.ConsumeCount = AutoIron;
+        {
+            consumeItem.ItemInstanceId = PlayerData.AutoIronInstanceID;
+            consumeItem.ConsumeCount = PlayerData.AutoIronCount;
+        }
         PlayFabClientAPI.ConsumeItem(consumeItem,
             resultCallback =>
             {
                 failedCallbackCounter = 0;
                 if(!sellingManual)
                 {
-                    AutoIron = 0;
-                    AutoIronTMP.text = AutoIron.ToString("n0");
+                    PlayerData.AutoIronCount = 0;
+                    AutoIronTMP.text = PlayerData.AutoIronCount.ToString("n0");
                 }
-
-                if (PlayerData.TinCount >= 4)
+                
+                if ((sellingManual && PlayerData.TinCount >= 4) || (!sellingManual && PlayerData.AutoTinCount >= 4))
                     ConsumeTinOre(sellingManual);
-                else if (PlayerData.CopperCount >= 4)
+                else if ((sellingManual && PlayerData.CopperCount >= 4) || (!sellingManual && PlayerData.AutoCopperCount >= 4))
                     ConsumeCopperOre(sellingManual);
                 else
                     UpdateStatistics(sellingManual);
@@ -745,21 +839,26 @@ public class GameplayCore : MonoBehaviour
 
     private void ConsumeTinOre(bool sellingManual)
     {
-        consumeItem.ItemInstanceId = PlayerData.TinInstanceID;
         if (sellingManual)
+        {
+            consumeItem.ItemInstanceId = PlayerData.TinInstanceID;
             consumeItem.ConsumeCount = PlayerData.TinCount - (PlayerData.TinCount % 4);
+        }
         else
-            consumeItem.ConsumeCount = AutoTin - (AutoTin % 4);
+        {
+            consumeItem.ItemInstanceId = PlayerData.AutoTinInstanceID;
+            consumeItem.ConsumeCount = PlayerData.AutoTinCount - (PlayerData.AutoTinCount % 4);
+        }
         PlayFabClientAPI.ConsumeItem(consumeItem,
             resultCallback =>
             {
                 failedCallbackCounter = 0;
                 if(!sellingManual)
                 {
-                    AutoTin = (AutoTin % 4);
-                    AutoTinTMP.text = AutoTin.ToString("n0");
+                    PlayerData.AutoTinCount = (PlayerData.AutoTinCount % 4);
+                    AutoTinTMP.text = PlayerData.AutoTinCount.ToString("n0");
                 }
-                if (PlayerData.CopperCount >= 4)
+                if ((sellingManual && PlayerData.CopperCount >= 4) || (!sellingManual && PlayerData.AutoCopperCount >= 4))
                     ConsumeCopperOre(sellingManual);
                 else
                     UpdateStatistics(sellingManual);
@@ -775,19 +874,25 @@ public class GameplayCore : MonoBehaviour
 
     private void ConsumeCopperOre(bool sellingManual)
     {
-        consumeItem.ItemInstanceId = PlayerData.CopperInstanceID;
         if (sellingManual)
+        {
+            consumeItem.ItemInstanceId = PlayerData.CopperInstanceID;
             consumeItem.ConsumeCount = PlayerData.CopperCount - (PlayerData.CopperCount % 4);
+
+        }
         else
-            consumeItem.ConsumeCount = AutoCopper - (AutoCopper % 4);
+        {
+            consumeItem.ItemInstanceId = PlayerData.AutoCopperInstanceID;
+            consumeItem.ConsumeCount = PlayerData.AutoCopperCount - (PlayerData.AutoCopperCount % 4);
+        }
         PlayFabClientAPI.ConsumeItem(consumeItem,
             resultCallback =>
             {
                 failedCallbackCounter = 0;
                 if(!sellingManual)
                 {
-                    AutoCopper = (AutoCopper % 4);
-                    AutoCopperTMP.text = AutoCopper.ToString("n0");
+                    PlayerData.AutoCopperCount = (PlayerData.AutoCopperCount % 4);
+                    AutoCopperTMP.text = PlayerData.AutoCopperCount.ToString("n0");
                 }
                 UpdateStatistics(sellingManual);
             },
@@ -853,9 +958,15 @@ public class GameplayCore : MonoBehaviour
             {
                 failedCallbackCounter = 0;
                 if (sellingManual)
+                {
+                    Debug.Log(TotalEZCoinValue);
                     PlayerData.CoinsGained += TotalEZCoinValue;
+                }
                 else
+                {
+                    Debug.Log(TotalAutoEZCoinValue);
                     PlayerData.CoinsGained += TotalAutoEZCoinValue;
+                }
                 UpdateQuestData(sellingManual);
             },
             errorCallback =>
@@ -869,6 +980,7 @@ public class GameplayCore : MonoBehaviour
 
     private void UpdateQuestData(bool sellingManual)
     {
+        Debug.Log(PlayerData.SerializeCurrentQuestData());
         updateUserData.Data.Clear();
         updateUserData.Data.Add("Quests", PlayerData.SerializeCurrentQuestData());
         PlayFabClientAPI.UpdateUserData(updateUserData,
@@ -924,6 +1036,13 @@ public class GameplayCore : MonoBehaviour
         DiamondOreTMP.text = PlayerData.DiamondCount.ToString("n0");
     }
 
+    public void ProcessAutoInventoryPanel()
+    {
+        AutoIronTMP.text = PlayerData.AutoIronCount.ToString("n0");
+        AutoTinTMP.text = PlayerData.AutoTinCount.ToString("n0");
+        AutoCopperTMP.text = PlayerData.AutoCopperCount.ToString("n0");
+    }
+
     public void CalculateEZCoinValue()
     {
         TotalEZCoinValue = Mathf.FloorToInt(PlayerData.TinCount / 4) + Mathf.FloorToInt(PlayerData.CopperCount / 4) + PlayerData.IronCount;
@@ -937,7 +1056,7 @@ public class GameplayCore : MonoBehaviour
 
     public void CalculateAutoEZCoinValue()
     {
-        TotalAutoEZCoinValue = Mathf.FloorToInt(AutoTin / 4) + Mathf.FloorToInt(AutoCopper / 4) + AutoIron;
+        TotalAutoEZCoinValue = Mathf.FloorToInt(PlayerData.AutoTinCount / 4) + Mathf.FloorToInt(PlayerData.AutoCopperCount / 4) + PlayerData.AutoIronCount;
         if (TotalAutoEZCoinValue > 0)
             SellAutoBtn.interactable = true;
         else
@@ -959,19 +1078,122 @@ public class GameplayCore : MonoBehaviour
 
     public void UpdateAutoTimeLeft()
     {
-        updateUserData.Data.Clear();
-        updateUserData.Data.Add("AutoPilot", PlayerData.SerializeCurrentAutoTimerData());
-        PlayFabClientAPI.UpdateUserData(updateUserData,
+        if(!GameManager.Instance.DebugMode)
+        {
+            updateUserData.Data.Clear();
+            updateUserData.Data.Add("AutoPilot", PlayerData.SerializeCurrentAutoTimerData());
+            PlayFabClientAPI.UpdateUserData(updateUserData,
+                resultCallback =>
+                {
+                    failedCallbackCounter = 0;
+                },
+                errorCallback =>
+                {
+                    ErrorCallback(errorCallback.Error,
+                            UpdateAutoTimeLeft,
+                            () => ProcessError(errorCallback.ErrorMessage));
+                });
+        }
+        
+    }
+    #endregion
+
+    #region EXTENSION
+    public void PurchaseExtension()
+    {
+        if (GameManager.Instance.DebugMode)
+        {
+            PlayerData.EZCoin -= ClickedExtension.ExtensionPrice;
+            EZCoinTMP.text = PlayerData.EZCoin.ToString("n0");
+            UnlockIslandZones(ClickedExtension.ExtensionName);
+            ClickedExtension.UnlockExtension();
+            HidePurchasePanel();
+            ClickedExtension = null;
+        }
+        else
+            StartPurchasePlayFab();
+    }
+
+    private void StartPurchasePlayFab()
+    {
+        DisplayLoadingPanel();
+        startPurchase.CatalogVersion = "Extensions";
+        startPurchase.Items.Clear();
+        startPurchase.Items.Add(new ItemPurchaseRequest() { ItemId = ClickedExtension.ExtensionName, Quantity = 1 });
+        PlayFabClientAPI.StartPurchase(startPurchase,
             resultCallback =>
             {
                 failedCallbackCounter = 0;
+                PayForPurchase(resultCallback.OrderId, resultCallback.PaymentOptions[0].ProviderName);
             },
             errorCallback =>
             {
                 ErrorCallback(errorCallback.Error,
-                        UpdateAutoTimeLeft,
-                        () => ProcessError(errorCallback.ErrorMessage));
+                    StartPurchasePlayFab,
+                    () => ProcessError(errorCallback.ErrorMessage));
             });
+    }
+
+    private void PayForPurchase(string _orderID, string _providerName)
+    {
+        payForPurchase.Currency = "EC";
+        payForPurchase.OrderId = _orderID;
+        payForPurchase.ProviderName = _providerName;
+
+        PlayFabClientAPI.PayForPurchase(payForPurchase,
+            resultCallback =>
+            {
+                failedCallbackCounter = 0;
+                ConfirmPurchase(_orderID);
+            },
+            errorCallback =>
+            {
+                ErrorCallback(errorCallback.Error,
+                    () => PayForPurchase(_orderID, _providerName),
+                    () => ProcessError(errorCallback.ErrorMessage));
+            });
+    }
+
+    private void ConfirmPurchase(string _orderID)
+    {
+        confirmPurchase.OrderId = _orderID;
+
+        PlayFabClientAPI.ConfirmPurchase(confirmPurchase,
+            resultCallback =>
+            {
+                failedCallbackCounter = 0;
+                HidePurchasePanel();
+                GetUserInventoryPlayFab();
+            },
+            errorCallback =>
+            {
+                ErrorCallback(errorCallback.Error,
+                    () => ConfirmPurchase(_orderID),
+                    () => ProcessError(errorCallback.ErrorMessage));
+            });
+    }
+
+    public void UnlockIslandZones(string _zone)
+    {
+        switch (_zone)
+        {
+            case "MineANorth":
+                PlayerData.CanAccessMineANorth = true;
+                NorthZoneExtension.UnlockExtension();
+                break;
+            case "MineASouth":
+                PlayerData.CanAccessMineASouth = true;
+                SouthZoneExtension.UnlockExtension();
+                break;
+            case "MineAEast":
+                PlayerData.CanAccessMineAEast = true;
+                EastZoneExtension.UnlockExtension();
+                break;
+            case "MineAWest":
+                PlayerData.CanAccessMineAWest = true;
+                WestZoneExtension.UnlockExtension();
+                break;
+        }
     }
     #endregion
 
@@ -1019,6 +1241,14 @@ public class GameplayCore : MonoBehaviour
     {
         HideLoadingPanel();
         GameManager.Instance.DisplaySpecialErrorPanel("Server Error. Please restart the game");
+    }
+
+    public bool PurchaseActive()
+    {
+        if (PurchaseRT.gameObject.activeSelf)
+            return true;
+        else
+            return false;
     }
     #endregion
 }

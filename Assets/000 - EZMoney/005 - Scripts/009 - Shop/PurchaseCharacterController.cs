@@ -53,46 +53,57 @@ public class PurchaseCharacterController : MonoBehaviour
     {
         if(GameManager.Instance.DebugMode)
         {
-            if (PlayerData.EZCoin >= ThisCharacterData.price)
+            if (MayPurchaseCharacter())
             {
-                for(int i = 0; i < PlayerData.OwnedCharacters.Count; i++)
+                if (PlayerData.EZCoin >= ThisCharacterData.price)
                 {
-                    if (PlayerData.OwnedCharacters[i].BaseCharacterData == null)
+                    for (int i = 0; i < PlayerData.OwnedCharacters.Count; i++)
                     {
-                        PlayerData.OwnedCharacters[i].CharacterInstanceID = "newlyPurchasedCharacter " + i;
-                        PlayerData.OwnedCharacters[i].BaseCharacterData = ThisCharacterData;
-                        PlayerData.OwnedCharacters[i].CharacterCurrentRole = CharacterInstanceData.Roles.MINER;
-                        PlayerData.OwnedCharacters[i].CharacterCurrentState = CharacterInstanceData.States.INVENTORY;
-                        PlayerData.OwnedCharacters[i].CharacterCurrentStamina = ThisCharacterData.stamina;
-                        break;
+                        if (PlayerData.OwnedCharacters[i].BaseCharacterData == null)
+                        {
+                            PlayerData.OwnedCharacters[i].CharacterInstanceID = "newlyPurchasedCharacter " + i;
+                            PlayerData.OwnedCharacters[i].BaseCharacterData = ThisCharacterData;
+                            PlayerData.OwnedCharacters[i].CharacterCurrentRole = CharacterInstanceData.Roles.MINER;
+                            PlayerData.OwnedCharacters[i].CharacterCurrentState = CharacterInstanceData.States.INVENTORY;
+                            PlayerData.OwnedCharacters[i].CharacterCurrentStamina = ThisCharacterData.stamina;
+                            break;
+                        }
                     }
+                    ShopCore.OwnedCharactersCount++;
+                    PlayerData.EZCoin -= ThisCharacterData.price;
+                    ShopCore.UpdateEZCoinDisplay();
+                    ShopCore.CheckCharacterPurchasability();
+                    ShopCore.CheckAutopilotPurchasability();
                 }
-                PlayerData.EZCoin -= ThisCharacterData.price;
-                ShopCore.UpdateEZCoinDisplay();
-                ShopCore.CheckCharacterPurchasability();
-                ShopCore.CheckAutopilotPurchasability();
+                else
+                    GameManager.Instance.DisplayErrorPanel("You do not have enough EZCoins to purchase this character");
             }
             else
-                GameManager.Instance.DisplayErrorPanel("You do not have enough EZCoins to purchase this character");
+                GameManager.Instance.DisplayErrorPanel("You may only own " + ShopCore.OwnedCharactersCount + " characters with a " + PlayerData.SubscriptionLevel + " subscription");
         }
         else
         {
-            ShopCore.DisplayLoadingPanel();
-            PlayFabClientAPI.GetUserData(getUserData,
-                resultCallback =>
-                {
-                    failedCallbackCounter = 0;
-                    if (resultCallback.Data.ContainsKey("LUID") && resultCallback.Data["LUID"].Value == PlayerData.LUID)
-                        StartPurchasePlayFab();
-                    else
-                        GameManager.Instance.DisplayDualLoginErrorPanel();
-                },
-                errorCallback =>
-                {
-                    ErrorCallback(errorCallback.Error,
-                        PurchaseThisCharacter,
-                        () => ProcessError(errorCallback.ErrorMessage)); 
-                });
+            if(MayPurchaseCharacter())
+            {
+                ShopCore.DisplayLoadingPanel();
+                PlayFabClientAPI.GetUserData(getUserData,
+                    resultCallback =>
+                    {
+                        failedCallbackCounter = 0;
+                        if (resultCallback.Data.ContainsKey("LUID") && resultCallback.Data["LUID"].Value == PlayerData.LUID)
+                            StartPurchasePlayFab();
+                        else
+                            GameManager.Instance.DisplayDualLoginErrorPanel();
+                    },
+                    errorCallback =>
+                    {
+                        ErrorCallback(errorCallback.Error,
+                            PurchaseThisCharacter,
+                            () => ProcessError(errorCallback.ErrorMessage));
+                    });
+            }
+            else
+                GameManager.Instance.DisplayErrorPanel("You may only own " + ShopCore.OwnedCharactersCount + " own characters with a " + PlayerData.SubscriptionLevel + " subscription");
         }
     }
 
@@ -188,9 +199,9 @@ public class PurchaseCharacterController : MonoBehaviour
         resultCallback =>
         {
             failedCallbackCounter = 0;
-            PlayerData.EZCoin -= 2000;
-            ShopCore.UpdateEZCoinDisplay();
-            ShopCore.HideLoadingPanel();
+            //PlayerData.EZCoin -= 2000;
+            ShopCore.GetUserInventoryPlayfab();
+            ShopCore.ListAllCharactersPlayFab();
         },
         errorCallback =>
         {
@@ -202,6 +213,18 @@ public class PurchaseCharacterController : MonoBehaviour
 
 
     #region UTILITY
+    private bool MayPurchaseCharacter()
+    {
+        if ((PlayerData.SubscriptionLevel == "PEARL" && ShopCore.OwnedCharactersCount >= 5) || 
+            (PlayerData.SubscriptionLevel == "TOPAZ" && ShopCore.OwnedCharactersCount >= 10) ||
+            (PlayerData.SubscriptionLevel == "SAPPHIRE" && ShopCore.OwnedCharactersCount >= 15) ||
+            (PlayerData.SubscriptionLevel == "EMERALD" && ShopCore.OwnedCharactersCount >= 20) ||
+            (PlayerData.SubscriptionLevel == "RUBY" && ShopCore.OwnedCharactersCount >= 25) ||
+            (PlayerData.SubscriptionLevel == "DIAMOND" && ShopCore.OwnedCharactersCount >= 30))
+            return false;
+        else
+            return true;
+    }
     private void ErrorCallback(PlayFabErrorCode errorCode, Action restartAction, Action errorAction)
     {
         if (errorCode == PlayFabErrorCode.ConnectionError)

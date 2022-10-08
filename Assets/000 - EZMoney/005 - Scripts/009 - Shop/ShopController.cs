@@ -10,7 +10,10 @@ public class ShopController : MonoBehaviour
     {
         GameManager.Instance.SceneController.AddActionLoadinList(ShopCore.InitializeShopScene());
         if (!GameManager.Instance.DebugMode)
+        {
             GameManager.Instance.SceneController.AddActionLoadinList(ShopCore.GetUserInventory());
+            GameManager.Instance.SceneController.AddActionLoadinList(ShopCore.ListAllCharacters());
+        }
         GameManager.Instance.SceneController.ActionPass = true;
         ShopCore.onShopStateChange += ShopStateChange;
     }
@@ -24,6 +27,7 @@ public class ShopController : MonoBehaviour
     {
         ShopCore.getUserData = new GetUserDataRequest();
         ShopCore.getUserInventory = new GetUserInventoryRequest();
+        ShopCore.listUsersCharacters = new ListUsersCharactersRequest();
     }
 
     private void ShopStateChange(object sender, EventArgs e)

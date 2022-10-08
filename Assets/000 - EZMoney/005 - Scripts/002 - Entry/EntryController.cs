@@ -26,9 +26,13 @@ public class EntryController : MonoBehaviour
         else if (EntryCore.CurrentEntryState == EntryCore.EntryStates.LOGIN)
         {
             EntryCore.ShowLoginPanel();
-            //EntryCore.UsernameLoginTMP.text = PlayerPrefs.GetString("Username");
-            //EntryCore.PasswordLoginTMP.text = PlayerPrefs.GetString("Password");
-            //LoginCore.LoginWithPlayfab(PlayerPrefs.GetString("Username"), PlayerPrefs.GetString("Password"));
+            if(!GameManager.Instance.DebugMode && PlayerPrefs.HasKey("Username") && PlayerPrefs.HasKey("Password"))
+            {
+                EntryCore.UsernameLoginTMP.text = PlayerPrefs.GetString("Username");
+                EntryCore.PasswordLoginTMP.text = PlayerPrefs.GetString("Password");
+                LoginCore.LoginWithPlayFab(PlayerPrefs.GetString("Username"), PlayerPrefs.GetString("Password"));
+            }
+
         }
         else if (EntryCore.CurrentEntryState == EntryCore.EntryStates.LINKS)
             EntryCore.ShowLinksPanel();
@@ -38,7 +42,7 @@ public class EntryController : MonoBehaviour
     //========================================================================================
 
     [field: SerializeField] private EntryCore EntryCore { get; set; }
-    //[field: SerializeField] private LoginCore LoginCore { get; set; }
+    [field: SerializeField] private LoginCore LoginCore { get; set; }
 
     public void EntryStateToIndex(int state)
     {

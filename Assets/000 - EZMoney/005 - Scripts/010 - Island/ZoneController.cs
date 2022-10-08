@@ -11,7 +11,7 @@ public class ZoneController : MonoBehaviour
     [SerializeField] public ButtonScaler ButtonScaler;
 
     [field: Header("ZONE DATA")]
-    [SerializeField] public bool ZoneUnlocked { get; set; }
+    [field: SerializeField] public bool ZoneUnlocked { get; set; }
     [field: SerializeField] public string ZoneName { get; set; }
     [field: SerializeField] public int ZonePrice { get; set; }
 
@@ -39,7 +39,14 @@ public class ZoneController : MonoBehaviour
         {
             Debug.Log("You will go to " + ZoneName);
             if (ZoneName == "MineA")
-                GameManager.Instance.SceneController.CurrentScene = "MineAScene";
+            {
+                GameManager.Instance.InterstitialAd.willSwitchScene = true;
+                GameManager.Instance.InterstitialAd.sceneToLoad = "MineAScene";
+                GameManager.Instance.InterstitialAd.ShowAd();
+            }
+            else
+                GameManager.Instance.DisplayErrorPanel("COMING SOON");
+
         }
         else if (PlayerData.EZCoin < ZonePrice)
             GameManager.Instance.DisplayErrorPanel("You do not have enough EZCoins to purchase access to this zone");

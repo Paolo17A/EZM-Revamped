@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9f4b4d2dee902242a6cc1fb67c12c41, type: 3}
   m_Name: CharacterInstanceData 1
   m_EditorClassIdentifier: 
-  <CharacterInstanceID>k__BackingField: 
-  <BaseCharacterData>k__BackingField: {fileID: 11400000, guid: 082649cbcc057a84da7a22c89d4886e5, type: 2}
+  <CharacterInstanceID>k__BackingField: 123wqedsa
+  <BaseCharacterData>k__BackingField: {fileID: 11400000, guid: 5aa849b581eeada41b05d7cf243c07dc, type: 2}
   <CharacterCurrentRole>k__BackingField: 1
-  <CharacterCurrentState>k__BackingField: 2
-  <CharacterCurrentStamina>k__BackingField: 4
-  <OnAutoPilot>k__BackingField: 1
+  <CharacterCurrentState>k__BackingField: 1
+  <CharacterCurrentStamina>k__BackingField: 5
+  <OnAutoPilot>k__BackingField: 0

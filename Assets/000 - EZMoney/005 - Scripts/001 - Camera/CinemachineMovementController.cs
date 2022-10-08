@@ -18,19 +18,50 @@ public class CinemachineMovementController : MonoBehaviour
     [SerializeField][ReadOnly] private Vector3 target_position;
 
     [Header("CLAMPS")]
-    [SerializeField] private float minXClamp;
-    [SerializeField] private float maxXClamp;
-    [SerializeField] private float minZClamp;
-    [SerializeField] private float maxZClamp;
+    [SerializeField][ReadOnly] public Vector3 defaultCenterPos;
+    [SerializeField][ReadOnly] public float defaultMinXClamp;
+    [SerializeField][ReadOnly] public float defaultMaxXClamp;
+    [SerializeField][ReadOnly] public float defaultMinZClamp;
+    [SerializeField][ReadOnly] public float defaultMaxZClamp;
+    [SerializeField] public float minXClamp;
+    [SerializeField] public float maxXClamp;
+    [SerializeField] public float minZClamp;
+    [SerializeField] public float maxZClamp;
 
+    [Header("DEBUGGER")]
+    Vector2 direction;
+    [SerializeField][ReadOnly] public Vector3 destinationVector;
     [SerializeField] private bool isDragging;
     [SerializeField][ReadOnly] private bool flag;
+    [SerializeField][ReadOnly] public bool travelling;
     //=================================================================================
+    private void Start()
+    {
+        defaultCenterPos = VirtualCamera.transform.position;
+        defaultMinXClamp = minXClamp;
+        defaultMaxXClamp = maxXClamp;
+        defaultMinZClamp = minZClamp;
+        defaultMaxZClamp = maxZClamp;
+    }
 
     void Update()
     {
-        if(GameplayCore.CurrentGameplayState == GameplayCore.GameplayStates.CORE)
+        if (travelling)
+            TravelCamera();
+        else if (GameplayCore.CurrentGameplayState == GameplayCore.GameplayStates.CORE && !GameplayCore.PurchaseActive())
             PanCamera();
+
+    }
+    private void TravelCamera()
+    {
+        if(Vector3.Distance(transform.position, destinationVector) >= Mathf.Epsilon)
+        {
+            travelling = false;
+        }
+        else
+        {
+            VirtualCamera.transform.position = Vector3.MoveTowards(VirtualCamera.transform.position, destinationVector, 3 * Time.deltaTime);
+        }
     }
 
     private void PanCamera()
@@ -71,7 +102,7 @@ public class CinemachineMovementController : MonoBehaviour
     {
         // Get direction of movement.  (Note: Don't normalize, the magnitude of change is going to be Vector3.Distance(current_position-hit_position)
         // anyways.  
-        Vector2 direction = Camera.main.ScreenToWorldPoint(current_position) - Camera.main.ScreenToWorldPoint(hit_position);
+        direction = Camera.main.ScreenToWorldPoint(current_position) - Camera.main.ScreenToWorldPoint(hit_position);
 
         // Invert direction to that terrain appears to move with the mouse.
         direction = direction * -1f;

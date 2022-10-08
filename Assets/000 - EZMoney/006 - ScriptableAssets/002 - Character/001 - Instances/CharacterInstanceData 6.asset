@@ -16,3 +16,5 @@ MonoBehaviour:
   <BaseCharacterData>k__BackingField: {fileID: 0}
   <CharacterCurrentRole>k__BackingField: 0
   <CharacterCurrentState>k__BackingField: 0
+  <CharacterCurrentStamina>k__BackingField: 4
+  <OnAutoPilot>k__BackingField: 0

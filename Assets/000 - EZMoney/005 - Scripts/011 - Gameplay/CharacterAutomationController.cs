@@ -70,23 +70,20 @@ public class CharacterAutomationController : MonoBehaviour
         {
             if (randomReward == 0)
             {
-                PlayerData.IronCount++;
-                GameplayCore.AutoIron++;
-                GameplayCore.AutoIronTMP.text = GameplayCore.AutoIron.ToString("n0");
+                PlayerData.AutoIronCount++;
+                GameplayCore.AutoIronTMP.text = PlayerData.AutoIronCount.ToString("n0");
             }
             else if (randomReward == 1)
             {
-                PlayerData.CopperCount++;
-                GameplayCore.AutoCopper++;
-                GameplayCore.AutoCopperTMP.text = GameplayCore.AutoCopper.ToString("n0");
+                PlayerData.AutoCopperCount++;
+                GameplayCore.AutoCopperTMP.text = PlayerData.AutoCopperCount.ToString("n0");
             }
             else if (randomReward == 2)
             {
-                PlayerData.TinCount++;
-                GameplayCore.AutoTin++;
-                GameplayCore.AutoIronTMP.text = GameplayCore.AutoTin.ToString("n0");
+                PlayerData.AutoTinCount++;
+                GameplayCore.AutoIronTMP.text = PlayerData.AutoTinCount.ToString("n0");
             }
-            GameplayCore.ProcessInventoryPanel();
+            GameplayCore.ProcessAutoInventoryPanel();
             GameplayCore.CalculateAutoEZCoinValue();
         }
         else
@@ -100,13 +97,13 @@ public class CharacterAutomationController : MonoBehaviour
                         switch (randomReward)
                         {
                             case 0:
-                                dispensedOre = "IronOre";
+                                dispensedOre = "AutoIronOre";
                                 break;
                             case 1:
-                                dispensedOre = "CopperOre";
+                                dispensedOre = "AutoCopperOre";
                                 break;
                             case 2:
-                                dispensedOre = "TinOre";
+                                dispensedOre = "AutoTinOre";
                                 break;
                         }
                         PlayFabClientAPI.ExecuteCloudScript(new ExecuteCloudScriptRequest()
@@ -118,22 +115,6 @@ public class CharacterAutomationController : MonoBehaviour
                         resultCallback =>
                         {
                             failedCallbackCounter = 0;
-                            switch (randomReward)
-                            {
-                                case 0:
-                                    GameplayCore.AutoIron++;
-                                    GameplayCore.AutoIronTMP.text = GameplayCore.AutoIron.ToString("n0");
-                                    break;
-                                case 1:
-                                    GameplayCore.AutoCopper++;
-                                    GameplayCore.AutoCopperTMP.text = GameplayCore.AutoCopper.ToString("n0");
-                                    break;
-                                case 2:
-                                    GameplayCore.AutoTin++;
-                                    GameplayCore.AutoTinTMP.text = GameplayCore.AutoTin.ToString("n0");
-                                    break;
-                            }
-                            GameplayCore.CalculateAutoEZCoinValue();
                             GameplayCore.GetUserInventoryPlayFab();
                         },
                         errorCallback =>
@@ -157,16 +138,16 @@ public class CharacterAutomationController : MonoBehaviour
 
     private void ReduceCharacterStamina()
     {
-        if(GameManager.Instance.DebugMode)
+        ThisCharacterSlot.ThisCharacterInstance.CharacterCurrentStamina--;
+        ThisCharacterSlot.StaminaSlider.value = (float)ThisCharacterSlot.ThisCharacterInstance.CharacterCurrentStamina / ThisCharacterSlot.ThisCharacterInstance.BaseCharacterData.stamina;
+        if (GameManager.Instance.DebugMode)
         {
-            ThisCharacterSlot.ThisCharacterInstance.CharacterCurrentStamina--;
             if (ThisCharacterSlot.ThisCharacterInstance.CharacterCurrentStamina == 0)
                 ThisCharacterSlot.UndeployThisCharacter();
             InitializeAutomatedCharacter();
         }
         else
         {
-            ThisCharacterSlot.ThisCharacterInstance.CharacterCurrentStamina--;
             updateCharacterData.CharacterId = ThisCharacterSlot.ThisCharacterInstance.CharacterInstanceID;
             updateCharacterData.Data.Clear();
             updateCharacterData.Data.Add("CurrentStamina", ThisCharacterSlot.ThisCharacterInstance.CharacterCurrentStamina.ToString());

@@ -50,6 +50,8 @@ public class GameManager : MonoBehaviour
     [field: SerializeField] public InputManager InputManager { get; set; }
     [field: SerializeField] public AudioManager BGMAudioManager { get; set; }
     [field: SerializeField] public AudioManager SFXAudioManager { get; set; }
+    [field: SerializeField] public AdsInitializer AdsInitializer { get; set; }
+    [field: SerializeField] public InterstitialAd InterstitialAd { get; set; }
 
     [field: Header("CHARACTERS")]
     [field: SerializeField] public List<CharacterData> AllCharacters { get; set; }

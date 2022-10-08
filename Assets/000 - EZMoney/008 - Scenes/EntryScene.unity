@@ -1781,6 +1781,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <EntryCore>k__BackingField: {fileID: 667995010}
+  <LoginCore>k__BackingField: {fileID: 667995012}
 --- !u!114 &667995010
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -61,7 +61,8 @@ public class ShopCore : MonoBehaviour
     [Header("CHARACTERS PANEL")]
     [SerializeField] private RectTransform CharactersRT;
     [SerializeField] private CanvasGroup CharactersCG;
-    [SerializeField] private List<PurchaseCharacterController> PurchasableCharacters;   
+    [SerializeField] private List<PurchaseCharacterController> PurchasableCharacters;
+    [ReadOnly] public int OwnedCharactersCount;
 
     [Header("AUTO PANEL")]
     [SerializeField] private RectTransform AutoRT;
@@ -88,6 +89,7 @@ public class ShopCore : MonoBehaviour
     [Header("PLAYFAB VARIABLES")]
     [ReadOnly] public GetUserDataRequest getUserData;
     [ReadOnly] public GetUserInventoryRequest getUserInventory;
+    [ReadOnly] public ListUsersCharactersRequest listUsersCharacters;
     private int failedCallbackCounter;
     //=========================================================
     #endregion
@@ -112,6 +114,14 @@ public class ShopCore : MonoBehaviour
             
             GameManager.Instance.AnimationsLT.FadePanel(CoreRT, null, CoreCG, 0, 1, () => { });
             GameManager.Instance.AnimationsLT.FadePanel(ShopRT, null, ShopCG, 0, 1, () => { });
+
+            foreach(CharacterInstanceData ownedCharacter in PlayerData.OwnedCharacters)
+            {
+                if (ownedCharacter.BaseCharacterData != null)
+                    OwnedCharactersCount++;
+                else
+                    break;
+            }
 
             CurrentShopState = ShopStates.CHARACTERS;
         }
@@ -194,6 +204,30 @@ public class ShopCore : MonoBehaviour
             {
                 ErrorCallback(errorCallback.Error,
                     GetUserInventoryPlayfab,
+                    () => ProcessError(errorCallback.ErrorMessage));
+            });
+    }
+
+    public IEnumerator ListAllCharacters()
+    {
+        ListAllCharactersPlayFab();
+        yield return null;
+    }
+
+    public void ListAllCharactersPlayFab()
+    {
+        PlayFabClientAPI.GetAllUsersCharacters(listUsersCharacters,
+            resultCallback =>
+            {
+                failedCallbackCounter = 0;
+                OwnedCharactersCount = resultCallback.Characters.Count;
+                UpdateEZCoinDisplay();
+                HideLoadingPanel();
+            },
+            errorCallback =>
+            {
+                ErrorCallback(errorCallback.Error,
+                    ListAllCharactersPlayFab,
                     () => ProcessError(errorCallback.ErrorMessage));
             });
     }

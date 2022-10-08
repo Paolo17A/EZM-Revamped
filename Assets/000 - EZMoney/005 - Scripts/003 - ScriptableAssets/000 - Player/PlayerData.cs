@@ -50,13 +50,28 @@ public class PlayerData : ScriptableObject
     [field: SerializeField] public bool CanAccessForestA { get; set; }
     [field: SerializeField] public bool CanAccessForestB { get; set; }
 
+    [field: Header("EXTENSIONS")]
+    [field: SerializeField] public bool CanAccessMineANorth { get; set; }
+    [field: SerializeField] public bool CanAccessMineASouth { get; set; }
+    [field: SerializeField] public bool CanAccessMineAWest { get; set; }
+    [field: SerializeField] public bool CanAccessMineAEast { get; set; }
+
+
+
+
     [field: Header("ORES")]
     [field: SerializeField] public string IronInstanceID { get; set; }
     [field: SerializeField] public int IronCount { get; set; }
+    [field: SerializeField] public string AutoIronInstanceID { get; set; }
+    [field: SerializeField] public int AutoIronCount { get; set; }
     [field: SerializeField] public string TinInstanceID { get; set; }
     [field: SerializeField] public int TinCount { get; set; }
+    [field: SerializeField] public string AutoTinInstanceID { get; set; }
+    [field: SerializeField] public int AutoTinCount { get; set; }
     [field: SerializeField] public string CopperInstanceID { get; set; }
     [field: SerializeField] public int CopperCount { get; set; }
+    [field: SerializeField] public string AutoCopperInstanceID { get; set; }
+    [field: SerializeField] public int AutoCopperCount { get; set; }
     [field: SerializeField] public string SilverInstanceID { get; set; }
     [field: SerializeField] public int SilverCount { get; set; }
     [field: SerializeField] public string GoldInstanceID { get; set; }
@@ -126,12 +141,22 @@ public class PlayerData : ScriptableObject
             CanAccessMineB = false;
             CanAccessPondA = false;
             CanAccessPondB = false;
+            CanAccessMineANorth = false;
+            CanAccessMineASouth = false;
+            CanAccessMineAWest = false;
+            CanAccessMineAEast = false;
             IronCount = 0;
             IronInstanceID = "";
+            AutoIronCount = 0;
+            AutoIronInstanceID = "";
             CopperCount = 0;
             CopperInstanceID = "";
+            AutoCopperCount = 0;
+            AutoCopperInstanceID = "";
             TinCount = 0;
             TinInstanceID = "";
+            AutoTinCount = 0;
+            AutoTinInstanceID = "";
             SilverCount = 0;
             SilverInstanceID = "";
             GoldCount = 0;

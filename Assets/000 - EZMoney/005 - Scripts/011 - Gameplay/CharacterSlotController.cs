@@ -16,6 +16,7 @@ public class CharacterSlotController : MonoBehaviour
     [SerializeField] private GameplayCore GameplayCore;
     [SerializeField] private int SlotIndex;
     [SerializeField] public Button UndeployBtn;
+    [SerializeField] public Slider StaminaSlider;
 
     [Header("AUTOMATION DATA")]
     [SerializeField] public bool ForAutoPilot;
@@ -30,6 +31,7 @@ public class CharacterSlotController : MonoBehaviour
     [SerializeField][ReadOnly] private UpdateCharacterDataRequest updateCharacterData;
 
     private int failedCallbackCounter;
+    private bool isUndeploying;
     //==================================================================
     private void Awake()
     {
@@ -52,7 +54,18 @@ public class CharacterSlotController : MonoBehaviour
             {
                 ThisCharacterInstance.CharacterCurrentState = CharacterInstanceData.States.IDLE;
                 CharacterGO = Instantiate(ThisCharacterInstance.BaseCharacterData.AnimatedCharacterPrefab);
-                CharacterGO.transform.position = new Vector3(0, 5, -27);
+                //CharacterGO.transform.position = new Vector3(0, 5, -27);
+
+                if(GameplayCore.CurrentZone == GameplayCore.Zones.DEFAULT)
+                    CharacterGO.transform.position = new Vector3(0, 5, -27);
+                else if (GameplayCore.CurrentZone == GameplayCore.Zones.NORTH)
+                    CharacterGO.transform.position = new Vector3(0, 5, 6);
+                else if (GameplayCore.CurrentZone == GameplayCore.Zones.SOUTH)
+                    CharacterGO.transform.position = new Vector3(0, 5, -60);
+                else if (GameplayCore.CurrentZone == GameplayCore.Zones.EAST)
+                    CharacterGO.transform.position = new Vector3(35, 5, -30);
+                else if (GameplayCore.CurrentZone == GameplayCore.Zones.WEST)
+                    CharacterGO.transform.position = new Vector3(-30, 5, -30);
                 CharacterGO.GetComponent<CharacterPrefabCore>().ThisCharacterSlot = this;
                 CharacterGO.GetComponent<CharacterPrefabCore>().GameplayCore = GameplayCore;
             }
@@ -68,15 +81,15 @@ public class CharacterSlotController : MonoBehaviour
                 int strongestCharacterIndex = 0;
                 for(int i = 0; i < GameplayCore.UndeployedCharacters.Count; i++)
                 {
-                    if (GameplayCore.UndeployedCharacters[i].CharacterCurrentStamina > 0 && GameplayCore.UndeployedCharacters[i].BaseCharacterData.strength > ThisCharacterInstance.BaseCharacterData.strength)
+                    if (GameplayCore.UndeployedCharacters[i].BaseCharacterData.strength >= ThisCharacterInstance.BaseCharacterData.strength && GameplayCore.UndeployedCharacters[i].CharacterCurrentStamina > 0)
                     {
                         strongestCharacterIndex = i;
-                        ThisCharacterInstance = GameplayCore.UndeployedCharacters[i];
+                        ThisCharacterInstance = GameplayCore.UndeployedCharacters[strongestCharacterIndex];
                     }
                 }
                 if(ThisCharacterInstance.CharacterCurrentStamina == 0)
                 {
-                    Debug.Log("The only remaining character has no energy");
+                    Debug.Log(ThisCharacterInstance.CharacterInstanceID + " has no energy");
                     ThisCharacterInstance = null;
                     return;
                 }
@@ -95,6 +108,8 @@ public class CharacterSlotController : MonoBehaviour
     public void InitializeCharacterSlot()
     {
         UndeployBtn.gameObject.SetActive(true);
+        StaminaSlider.gameObject.SetActive(true);
+        StaminaSlider.value = (float)ThisCharacterInstance.CharacterCurrentStamina / ThisCharacterInstance.BaseCharacterData.stamina;
         CharacterImage.sprite = ThisCharacterInstance.BaseCharacterData.deployedSprite;
         ThisCharacterInstance.CharacterCurrentState = CharacterInstanceData.States.DEPLOYED;
     }
@@ -143,45 +158,53 @@ public class CharacterSlotController : MonoBehaviour
 
             CharacterImage.sprite = GameplayCore.EmptySlotSprite;
             UndeployBtn.gameObject.SetActive(false);
+            StaminaSlider.gameObject.SetActive(false);
             ThisCharacterInstance = null;
         }
         else
         {
-            updateCharacterData.CharacterId = ThisCharacterInstance.CharacterInstanceID;
-            updateCharacterData.Data.Clear();
-            updateCharacterData.Data.Add("OnAutopilot", "0");
+            if(!isUndeploying)
+            {
+                isUndeploying = true;
+                updateCharacterData.CharacterId = ThisCharacterInstance.CharacterInstanceID;
+                updateCharacterData.Data.Clear();
+                updateCharacterData.Data.Add("OnAutopilot", "0");
 
-            PlayFabClientAPI.UpdateCharacterData(updateCharacterData,
-                resultCallback =>
-                {
-                    failedCallbackCounter = 0;
-                    Destroy(CharacterGO);
-                    CharacterGO = null;
-                    ThisCharacterInstance.CharacterCurrentState = CharacterInstanceData.States.INVENTORY;
-                    if (ForAutoPilot)
+                PlayFabClientAPI.UpdateCharacterData(updateCharacterData,
+                    resultCallback =>
                     {
-                        GameplayCore.AutomatedCharacters.Remove(ThisCharacterInstance);
-                        ThisCharacterInstance.OnAutoPilot = false;
-                        if (GameplayCore.AutomatedCharacters.Count > 0)
-                            GameplayCore.StartAutomationBtn.interactable = true;
-                        else
+                        isUndeploying = false;
+                        failedCallbackCounter = 0;
+                        Destroy(CharacterGO);
+                        CharacterGO = null;
+                        ThisCharacterInstance.CharacterCurrentState = CharacterInstanceData.States.INVENTORY;
+                        if (ForAutoPilot)
                         {
-                            GameplayCore.StartAutomationBtn.interactable = false;
-                            GameplayCore.AutomationActivated = false;
+                            GameplayCore.AutomatedCharacters.Remove(ThisCharacterInstance);
+                            ThisCharacterInstance.OnAutoPilot = false;
+                            if (GameplayCore.AutomatedCharacters.Count > 0)
+                                GameplayCore.StartAutomationBtn.interactable = true;
+                            else
+                            {
+                                GameplayCore.StartAutomationBtn.interactable = false;
+                                GameplayCore.AutomationActivated = false;
+                            }
                         }
-                    }
-                    GameplayCore.UndeployedCharacters.Add(ThisCharacterInstance);
+                        GameplayCore.UndeployedCharacters.Add(ThisCharacterInstance);
 
-                    CharacterImage.sprite = GameplayCore.EmptySlotSprite;
-                    UndeployBtn.gameObject.SetActive(false);
-                    ThisCharacterInstance = null;
-                },
-                errorCallback =>
-                {
-                    ErrorCallback(errorCallback.Error,
-                        SetAutopilotPlayFab,
-                        () => ProcessError(errorCallback.ErrorMessage));
-                });
+                        CharacterImage.sprite = GameplayCore.EmptySlotSprite;
+                        UndeployBtn.gameObject.SetActive(false);
+                        StaminaSlider.gameObject.SetActive(false);
+                        ThisCharacterInstance = null;
+                    },
+                    errorCallback =>
+                    {
+                        ErrorCallback(errorCallback.Error,
+                            SetAutopilotPlayFab,
+                            () => ProcessError(errorCallback.ErrorMessage));
+                    });
+            }
+            
         }
     }
 

@@ -458,6 +458,7 @@ public class ProfileCore : MonoBehaviour
     public void LogOutButton()
     {
         PlayerPrefs.DeleteAll();
+        PlayerData.ResetPlayerData();
         GameManager.Instance.SceneController.CurrentScene = "EntryScene";
     }
 
